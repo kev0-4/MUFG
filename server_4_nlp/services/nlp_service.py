@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Optional, Union, Any
 from transformers import pipeline
 from config.settings import FINANCIAL_DATA_API
 from utils.logger import log_metadata
@@ -12,7 +12,7 @@ sentiment_pipeline = pipeline(
 )
 
 
-def analyze_sentiment(text: str, user_id: str) -> Dict[str, any]:
+def analyze_sentiment(text: str, user_id: str) -> Dict[str, Any]:
     """
     Analyze sentiment of a query or news article using Hugging Face's sentiment analysis pipeline.
     Supports long texts by chunking into 512-token segments.
@@ -22,7 +22,7 @@ def analyze_sentiment(text: str, user_id: str) -> Dict[str, any]:
         user_id (str): Unique user identifier for logging.
 
     Returns:
-        Dict[str, any]: Sentiment score and label (e.g., {"score": -0.5, "label": "NEGATIVE"}).
+        Dict[str, Any]: Sentiment score and label (e.g., {"score": -0.5, "label": "NEGATIVE"}).
     """
     from transformers import AutoTokenizer
     tokenizer = AutoTokenizer.from_pretrained("distilbert-base-uncased")
@@ -83,9 +83,9 @@ def fetch_news_sentiment(
     query: str,
     user_id: str,
     intent: str,
-    entities: Dict[str, any],
-    holdings: Optional[Dict[str, any]] = None  # 👈 Optional parameter
-) -> Dict[str, any]:
+    entities: Dict[str, Any],
+    holdings: Optional[Dict[str, Any]] = None  # 👈 Optional parameter
+) -> Dict[str, Any]:
     """
     Fetch and analyze sentiment of news articles relevant to the query using get_news_for_queries.
     Optionally include holdings/stocks to refine searches.
@@ -94,11 +94,11 @@ def fetch_news_sentiment(
         query (str): User query to guide news fetching.
         user_id (str): Unique user identifier for logging.
         intent (str): Intent from gemini_service (e.g., "scenario_simulation").
-        entities (Dict[str, any]): Entities from gemini_service (e.g., {"scenario": "recession"}).
-        holdings (Dict[str, any], optional): User's current holdings/stocks (e.g., {"stocks": ["BHP", "Rio Tinto"]})
+        entities (Dict[str, Any]): Entities from gemini_service (e.g., {"scenario": "recession"}).
+        holdings (Dict[str, Any], optional): User's current holdings/stocks (e.g., {"stocks": ["BHP", "Rio Tinto"]})
 
     Returns:
-        Dict[str, any]: News sentiment and summary (e.g., {"sentiment": -0.5, "summary": "Economic downturn predicted"}).
+        Dict[str, Any]: News sentiment and summary (e.g., {"sentiment": -0.5, "summary": "Economic downturn predicted"}).
 
     Raises:
         ValueError: If query is empty or invalid.

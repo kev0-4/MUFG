@@ -1,0 +1,408 @@
+{
+	"info": {
+		"_postman_id": "5e1cb7e6-7c8b-4553-9512-e14d8f79b156",
+		"name": "FinGuard NLP Server",
+		"description": "Postman collection to test FinGuard NLP Server endpoints for Australian superannuation queries.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "45489108",
+		"_collection_link": "https://kev-9357696.postman.co/workspace/Kev's-Workspace~87f605ee-6f5d-4fa6-82d3-933b00def76f/collection/45489108-5e1cb7e6-7c8b-4553-9512-e14d8f79b156?action=share&source=collection_link&creator=45489108"
+	},
+	"item": [
+		{
+			"name": "/nlp/query",
+			"item": [
+				{
+					"name": "Valid Query - Recession Impact",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Response has intent, entities, query_sentiment, news_sentiment\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('intent');",
+									"    pm.expect(jsonData).to.have.property('entities');",
+									"    pm.expect(jsonData).to.have.property('query_sentiment');",
+									"    pm.expect(jsonData.query_sentiment).to.have.property('score');",
+									"    pm.expect(jsonData.query_sentiment).to.have.property('label');",
+									"    pm.expect(jsonData).to.have.property('news_sentiment');",
+									"    pm.expect(jsonData.news_sentiment).to.have.property('sentiment');",
+									"    pm.expect(jsonData.news_sentiment).to.have.property('summary');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"query\": \"How will a recession affect my super in 20 years?\", \"user_id\": \"user_123\"}"
+						},
+						"url": {
+							"raw": "http://localhost:8000/nlp/query",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"nlp",
+								"query"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Valid Query - Contribution Projection",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Response has intent, entities, query_sentiment\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('intent');",
+									"    pm.expect(jsonData).to.have.property('entities');",
+									"    pm.expect(jsonData).to.have.property('query_sentiment');",
+									"    pm.expect(jsonData.query_sentiment).to.have.property('score');",
+									"    pm.expect(jsonData.query_sentiment).to.have.property('label');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"query\": \"If I contribute $20k quarterly, what happens in 10 years?\", \"user_id\": \"user_123\"}"
+						},
+						"url": {
+							"raw": "http://localhost:8000/nlp/query",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"nlp",
+								"query"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Invalid Query - Empty Query",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"pm.test(\"Response has error message\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('detail');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"query\": \"\", \"user_id\": \"user_123\"}"
+						},
+						"url": {
+							"raw": "http://localhost:8000/nlp/query",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"nlp",
+								"query"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Test Caching - Repeat Recession Query",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Response matches previous query\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('intent', 'scenario_simulation');",
+									"    pm.expect(jsonData.entities).to.have.property('scenario', 'recession');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"query\": \"How will a recession affect my super in 20 years?\", \"user_id\": \"user_123\"}"
+						},
+						"url": {
+							"raw": "http://localhost:8000/nlp/query",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"nlp",
+								"query"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "/nlp/enhance",
+			"item": [
+				{
+					"name": "Valid Enhance - Recession Scenario",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Response has simulation_data, news_sentiment, eli5_response\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('simulation_data');",
+									"    pm.expect(jsonData).to.have.property('news_sentiment');",
+									"    pm.expect(jsonData.news_sentiment).to.have.property('sentiment');",
+									"    pm.expect(jsonData.news_sentiment).to.have.property('summary');",
+									"    pm.expect(jsonData).to.have.property('eli5_response');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"simulation_data\": {\"projected_balance\": 500000, \"scenario\": \"recession\", \"timeframe\": 20, \"risk_level\": \"balanced\"}, \"user_id\": \"user_123\", \"ai_prompt\": \"Emphasize long-term saving.\"}"
+						},
+						"url": {
+							"raw": "http://localhost:8000/nlp/enhance",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"nlp",
+								"enhance"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Valid Enhance - No Scenario",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Response has simulation_data, eli5_response\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('simulation_data');",
+									"    pm.expect(jsonData).to.have.property('eli5_response');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"simulation_data\": {\"projected_balance\": 750000, \"timeframe\": 10, \"contribution\": 20000, \"frequency\": \"quarterly\"}, \"user_id\": \"user_123\", \"ai_prompt\": null}"
+						},
+						"url": {
+							"raw": "http://localhost:8000/nlp/enhance",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"nlp",
+								"enhance"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Invalid Enhance - Empty Simulation Data",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"pm.test(\"Response has error message\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('detail');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"simulation_data\": {}, \"user_id\": \"user_123\", \"ai_prompt\": \"Use a tree analogy.\"}"
+						},
+						"url": {
+							"raw": "http://localhost:8000/nlp/enhance",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"nlp",
+								"enhance"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Test Caching - Repeat Enhance Request",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Response matches previous enhance\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.simulation_data).to.have.property('scenario', 'recession');",
+									"    pm.expect(jsonData).to.have.property('eli5_response');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"simulation_data\": {\"projected_balance\": 500000, \"scenario\": \"recession\", \"timeframe\": 20, \"risk_level\": \"balanced\"}, \"user_id\": \"user_123\", \"ai_prompt\": \"Emphasize long-term saving.\"}"
+						},
+						"url": {
+							"raw": "http://localhost:8000/nlp/enhance",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"nlp",
+								"enhance"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
