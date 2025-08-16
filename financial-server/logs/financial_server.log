@@ -1,0 +1,202 @@
+2025-08-16 16:44:58 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T11:14:58.371570', 'service': 'financial_service', 'function': 'startup', 'user_id': 'anonymous', 'status': 'success', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': None}
+2025-08-16 16:44:58 - watchfiles.main - INFO - main - _log_changes - 308 - 1 change detected
+2025-08-16 16:45:00 - watchfiles.main - INFO - main - _log_changes - 308 - 3 changes detected
+2025-08-16 16:45:02 - watchfiles.main - INFO - main - _log_changes - 308 - 2 changes detected
+2025-08-16 16:45:05 - watchfiles.main - INFO - main - _log_changes - 308 - 13 changes detected
+2025-08-16 16:45:09 - watchfiles.main - INFO - main - _log_changes - 308 - 2 changes detected
+2025-08-16 16:45:15 - watchfiles.main - INFO - main - _log_changes - 308 - 2 changes detected
+2025-08-16 16:45:21 - watchfiles.main - INFO - main - _log_changes - 308 - 2 changes detected
+2025-08-16 16:45:25 - watchfiles.main - INFO - main - _log_changes - 308 - 2 changes detected
+2025-08-16 16:45:46 - watchfiles.main - INFO - main - _log_changes - 308 - 2 changes detected
+2025-08-16 16:46:25 - watchfiles.main - INFO - main - _log_changes - 308 - 2 changes detected
+2025-08-16 16:47:51 - watchfiles.main - INFO - main - _log_changes - 308 - 2 changes detected
+2025-08-16 16:50:34 - watchfiles.main - INFO - main - _log_changes - 308 - 2 changes detected
+2025-08-16 16:55:37 - watchfiles.main - INFO - main - _log_changes - 308 - 2 changes detected
+2025-08-16 16:59:51 - watchfiles.main - INFO - main - _log_changes - 308 - 1 change detected
+2025-08-16 17:00:03 - watchfiles.main - INFO - main - _log_changes - 308 - 2 changes detected
+2025-08-16 17:00:11 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T11:30:11.180194', 'service': 'financial_service', 'function': 'shutdown', 'user_id': 'anonymous', 'status': 'success', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': None}
+2025-08-16 17:02:41 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T11:32:41.947514', 'service': 'financial_service', 'function': 'startup', 'user_id': 'anonymous', 'status': 'success', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': None}
+2025-08-16 17:04:20 - watchfiles.main - INFO - main - _log_changes - 308 - 1 change detected
+2025-08-16 17:04:20 - watchfiles.main - INFO - main - _log_changes - 308 - 1 change detected
+2025-08-16 17:04:21 - yfinance - ERROR - base - _fetch_ticker_tz - 128 - Failed to get ticker 'AAPL' reason: Expecting value: line 1 column 1 (char 0)
+2025-08-16 17:04:21 - yfinance - ERROR - history - history - 122 - $AAPL: possibly delisted; no timezone found
+2025-08-16 17:04:21 - financial_service - ERROR - logger - log_metadata - 78 - API_CALL_ERROR: {'timestamp': '2025-08-16T11:34:21.861573', 'service': 'financial_service', 'function': 'get_stock_data', 'user_id': '6fd76a84-1d86-4122-b08e-ac18f2181592', 'status': 'error', 'duration_ms': 1574.972, 'cache_hit': False, 'api_source': None, 'error': 'No data found for ticker AAPL'}
+2025-08-16 17:04:21 - financial_service - ERROR - logger - log_metadata - 78 - API_CALL_ERROR: {'timestamp': '2025-08-16T11:34:21.861812', 'service': 'financial_service', 'function': 'api_stock_data', 'user_id': '6fd76a84-1d86-4122-b08e-ac18f2181592', 'status': 'error', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': 'No data found for ticker AAPL'}
+2025-08-16 17:04:28 - watchfiles.main - INFO - main - _log_changes - 308 - 2 changes detected
+2025-08-16 17:06:08 - watchfiles.main - INFO - main - _log_changes - 308 - 2 changes detected
+2025-08-16 17:07:43 - yfinance - ERROR - base - _fetch_ticker_tz - 128 - Failed to get ticker 'AAPL' reason: Expecting value: line 1 column 1 (char 0)
+2025-08-16 17:07:43 - yfinance - ERROR - history - history - 122 - $AAPL: possibly delisted; no timezone found
+2025-08-16 17:07:43 - financial_service - ERROR - logger - log_metadata - 78 - API_CALL_ERROR: {'timestamp': '2025-08-16T11:37:43.159364', 'service': 'financial_service', 'function': 'get_stock_data', 'user_id': 'b348c811-e636-496e-80a4-b425b434e8ec', 'status': 'error', 'duration_ms': 8.633000000000001, 'cache_hit': False, 'api_source': None, 'error': 'No data found for ticker AAPL'}
+2025-08-16 17:07:43 - financial_service - ERROR - logger - log_metadata - 78 - API_CALL_ERROR: {'timestamp': '2025-08-16T11:37:43.159547', 'service': 'financial_service', 'function': 'api_stock_data', 'user_id': 'b348c811-e636-496e-80a4-b425b434e8ec', 'status': 'error', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': 'No data found for ticker AAPL'}
+2025-08-16 17:07:43 - watchfiles.main - INFO - main - _log_changes - 308 - 1 change detected
+2025-08-16 17:07:51 - watchfiles.main - INFO - main - _log_changes - 308 - 1 change detected
+2025-08-16 17:12:59 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T11:42:59.997029', 'service': 'financial_service', 'function': 'shutdown', 'user_id': 'anonymous', 'status': 'success', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': None}
+2025-08-16 17:13:30 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T11:43:30.265109', 'service': 'financial_service', 'function': 'startup', 'user_id': 'anonymous', 'status': 'success', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': None}
+2025-08-16 17:13:39 - watchfiles.main - INFO - main - _log_changes - 308 - 7 changes detected
+2025-08-16 17:13:50 - watchfiles.main - INFO - main - _log_changes - 308 - 115 changes detected
+2025-08-16 17:13:50 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T11:43:50.888428', 'service': 'financial_service', 'function': 'shutdown', 'user_id': 'anonymous', 'status': 'success', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': None}
+2025-08-16 17:13:51 - watchfiles.main - INFO - main - _log_changes - 308 - 1 change detected
+2025-08-16 17:13:51 - watchfiles.main - INFO - main - _log_changes - 308 - 1 change detected
+2025-08-16 17:13:51 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T11:43:51.715989', 'service': 'financial_service', 'function': 'startup', 'user_id': 'anonymous', 'status': 'success', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': None}
+2025-08-16 17:13:59 - watchfiles.main - INFO - main - _log_changes - 308 - 90 changes detected
+2025-08-16 17:13:59 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T11:43:59.404120', 'service': 'financial_service', 'function': 'shutdown', 'user_id': 'anonymous', 'status': 'success', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': None}
+2025-08-16 17:13:59 - watchfiles.main - INFO - main - _log_changes - 308 - 4 changes detected
+2025-08-16 17:14:00 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T11:44:00.207034', 'service': 'financial_service', 'function': 'startup', 'user_id': 'anonymous', 'status': 'success', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': None}
+2025-08-16 17:14:00 - watchfiles.main - INFO - main - _log_changes - 308 - 2 changes detected
+2025-08-16 17:14:09 - watchfiles.main - INFO - main - _log_changes - 308 - 2 changes detected
+2025-08-16 17:14:25 - watchfiles.main - INFO - main - _log_changes - 308 - 10 changes detected
+2025-08-16 17:14:37 - watchfiles.main - INFO - main - _log_changes - 308 - 95 changes detected
+2025-08-16 17:14:37 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T11:44:37.622108', 'service': 'financial_service', 'function': 'shutdown', 'user_id': 'anonymous', 'status': 'success', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': None}
+2025-08-16 17:14:38 - watchfiles.main - INFO - main - _log_changes - 308 - 25 changes detected
+2025-08-16 17:14:38 - watchfiles.main - INFO - main - _log_changes - 308 - 4 changes detected
+2025-08-16 17:14:38 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T11:44:38.718477', 'service': 'financial_service', 'function': 'startup', 'user_id': 'anonymous', 'status': 'success', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': None}
+2025-08-16 17:14:41 - watchfiles.main - INFO - main - _log_changes - 308 - 1 change detected
+2025-08-16 17:14:42 - watchfiles.main - INFO - main - _log_changes - 308 - 47 changes detected
+2025-08-16 17:14:42 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T11:44:42.767511', 'service': 'financial_service', 'function': 'cache_set', 'user_id': 'anonymous', 'status': 'success', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': None}
+2025-08-16 17:14:42 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T11:44:42.767662', 'service': 'financial_service', 'function': 'get_stock_data', 'user_id': '24cd9075-ec98-4374-b4a1-03d463507369', 'status': 'success', 'duration_ms': 1125.842, 'cache_hit': False, 'api_source': 'yahoo_finance', 'error': None}
+2025-08-16 17:14:42 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T11:44:42.769285', 'service': 'financial_service', 'function': 'api_stock_data', 'user_id': '24cd9075-ec98-4374-b4a1-03d463507369', 'status': 'success', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': None}
+2025-08-16 17:14:43 - watchfiles.main - INFO - main - _log_changes - 308 - 11 changes detected
+2025-08-16 17:14:44 - watchfiles.main - INFO - main - _log_changes - 308 - 2 changes detected
+2025-08-16 17:14:47 - watchfiles.main - INFO - main - _log_changes - 308 - 1 change detected
+2025-08-16 17:14:49 - watchfiles.main - INFO - main - _log_changes - 308 - 3 changes detected
+2025-08-16 17:18:04 - watchfiles.main - INFO - main - _log_changes - 308 - 1 change detected
+2025-08-16 17:18:04 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T11:48:04.947561', 'service': 'financial_service', 'function': 'cache_set', 'user_id': 'anonymous', 'status': 'success', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': None}
+2025-08-16 17:18:04 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T11:48:04.947793', 'service': 'financial_service', 'function': 'get_stock_data', 'user_id': 'fcf64890-e4eb-4898-b330-89b2b13e8401', 'status': 'success', 'duration_ms': 283.12199999999996, 'cache_hit': False, 'api_source': 'yahoo_finance', 'error': None}
+2025-08-16 17:18:04 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T11:48:04.949574', 'service': 'financial_service', 'function': 'api_stock_data', 'user_id': 'fcf64890-e4eb-4898-b330-89b2b13e8401', 'status': 'success', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': None}
+2025-08-16 17:18:05 - watchfiles.main - INFO - main - _log_changes - 308 - 1 change detected
+2025-08-16 17:18:05 - watchfiles.main - INFO - main - _log_changes - 308 - 1 change detected
+2025-08-16 17:18:13 - watchfiles.main - INFO - main - _log_changes - 308 - 1 change detected
+2025-08-16 17:18:16 - watchfiles.main - INFO - main - _log_changes - 308 - 3 changes detected
+2025-08-16 17:18:23 - watchfiles.main - INFO - main - _log_changes - 308 - 1 change detected
+2025-08-16 17:18:23 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T11:48:23.938952', 'service': 'financial_service', 'function': 'cache_set', 'user_id': 'anonymous', 'status': 'success', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': None}
+2025-08-16 17:18:23 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T11:48:23.939620', 'service': 'financial_service', 'function': 'get_stock_data', 'user_id': 'a8f1b934-d4ea-4ccf-8562-d75a9f98ac40', 'status': 'success', 'duration_ms': 167.877, 'cache_hit': False, 'api_source': 'yahoo_finance', 'error': None}
+2025-08-16 17:18:23 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T11:48:23.940758', 'service': 'financial_service', 'function': 'api_stock_data', 'user_id': 'a8f1b934-d4ea-4ccf-8562-d75a9f98ac40', 'status': 'success', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': None}
+2025-08-16 17:18:24 - watchfiles.main - INFO - main - _log_changes - 308 - 2 changes detected
+2025-08-16 17:18:28 - watchfiles.main - INFO - main - _log_changes - 308 - 3 changes detected
+2025-08-16 17:18:30 - watchfiles.main - INFO - main - _log_changes - 308 - 1 change detected
+2025-08-16 17:18:32 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T11:48:32.391091', 'service': 'financial_service', 'function': 'cache_get', 'user_id': 'anonymous', 'status': 'cache_hit', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': None}
+2025-08-16 17:18:32 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T11:48:32.391645', 'service': 'financial_service', 'function': 'get_stock_data', 'user_id': 'f891a840-88a2-4e0a-8600-237c3d24c417', 'status': 'success', 'duration_ms': 1.629, 'cache_hit': True, 'api_source': None, 'error': None}
+2025-08-16 17:18:32 - financial_service - ERROR - logger - log_metadata - 78 - API_CALL_ERROR: {'timestamp': '2025-08-16T11:48:32.391955', 'service': 'financial_service', 'function': 'get_stock_data', 'user_id': 'f891a840-88a2-4e0a-8600-237c3d24c417', 'status': 'error', 'duration_ms': 1.933, 'cache_hit': False, 'api_source': None, 'error': "app.schemas.financial.StockDataResponse() got multiple values for keyword argument 'cache_hit'"}
+2025-08-16 17:18:32 - financial_service - ERROR - logger - log_metadata - 78 - API_CALL_ERROR: {'timestamp': '2025-08-16T11:48:32.392219', 'service': 'financial_service', 'function': 'api_stock_data', 'user_id': 'f891a840-88a2-4e0a-8600-237c3d24c417', 'status': 'error', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': "app.schemas.financial.StockDataResponse() got multiple values for keyword argument 'cache_hit'"}
+2025-08-16 17:18:48 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T11:48:48.440707', 'service': 'financial_service', 'function': 'cache_get', 'user_id': 'anonymous', 'status': 'cache_hit', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': None}
+2025-08-16 17:18:48 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T11:48:48.441329', 'service': 'financial_service', 'function': 'get_stock_data', 'user_id': 'cb35636f-b573-4be2-a002-71c993cd83b4', 'status': 'success', 'duration_ms': 2.233, 'cache_hit': True, 'api_source': None, 'error': None}
+2025-08-16 17:18:48 - financial_service - ERROR - logger - log_metadata - 78 - API_CALL_ERROR: {'timestamp': '2025-08-16T11:48:48.441623', 'service': 'financial_service', 'function': 'get_stock_data', 'user_id': 'cb35636f-b573-4be2-a002-71c993cd83b4', 'status': 'error', 'duration_ms': 2.54, 'cache_hit': False, 'api_source': None, 'error': "app.schemas.financial.StockDataResponse() got multiple values for keyword argument 'cache_hit'"}
+2025-08-16 17:18:48 - financial_service - ERROR - logger - log_metadata - 78 - API_CALL_ERROR: {'timestamp': '2025-08-16T11:48:48.441831', 'service': 'financial_service', 'function': 'api_stock_data', 'user_id': 'cb35636f-b573-4be2-a002-71c993cd83b4', 'status': 'error', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': "app.schemas.financial.StockDataResponse() got multiple values for keyword argument 'cache_hit'"}
+2025-08-16 17:19:05 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T11:49:05.846978', 'service': 'financial_service', 'function': 'cache_get', 'user_id': 'anonymous', 'status': 'cache_hit', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': None}
+2025-08-16 17:19:05 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T11:49:05.847595', 'service': 'financial_service', 'function': 'get_stock_data', 'user_id': '4077b9f0-fa93-4d90-a09d-ec061b6906a6', 'status': 'success', 'duration_ms': 2.3240000000000003, 'cache_hit': True, 'api_source': None, 'error': None}
+2025-08-16 17:19:05 - financial_service - ERROR - logger - log_metadata - 78 - API_CALL_ERROR: {'timestamp': '2025-08-16T11:49:05.847799', 'service': 'financial_service', 'function': 'get_stock_data', 'user_id': '4077b9f0-fa93-4d90-a09d-ec061b6906a6', 'status': 'error', 'duration_ms': 2.532, 'cache_hit': False, 'api_source': None, 'error': "app.schemas.financial.StockDataResponse() got multiple values for keyword argument 'cache_hit'"}
+2025-08-16 17:19:05 - financial_service - ERROR - logger - log_metadata - 78 - API_CALL_ERROR: {'timestamp': '2025-08-16T11:49:05.847915', 'service': 'financial_service', 'function': 'api_stock_data', 'user_id': '4077b9f0-fa93-4d90-a09d-ec061b6906a6', 'status': 'error', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': "app.schemas.financial.StockDataResponse() got multiple values for keyword argument 'cache_hit'"}
+2025-08-16 17:21:48 - watchfiles.main - INFO - main - _log_changes - 308 - 1 change detected
+2025-08-16 17:21:48 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T11:51:48.318388', 'service': 'financial_service', 'function': 'shutdown', 'user_id': 'anonymous', 'status': 'success', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': None}
+2025-08-16 17:21:48 - watchfiles.main - INFO - main - _log_changes - 308 - 1 change detected
+2025-08-16 17:21:49 - watchfiles.main - INFO - main - _log_changes - 308 - 3 changes detected
+2025-08-16 17:21:49 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T11:51:49.329134', 'service': 'financial_service', 'function': 'startup', 'user_id': 'anonymous', 'status': 'success', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': None}
+2025-08-16 17:21:59 - watchfiles.main - INFO - main - _log_changes - 308 - 4 changes detected
+2025-08-16 17:21:59 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T11:51:59.242172', 'service': 'financial_service', 'function': 'shutdown', 'user_id': 'anonymous', 'status': 'success', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': None}
+2025-08-16 17:21:59 - watchfiles.main - INFO - main - _log_changes - 308 - 1 change detected
+2025-08-16 17:22:00 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T11:52:00.163636', 'service': 'financial_service', 'function': 'startup', 'user_id': 'anonymous', 'status': 'success', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': None}
+2025-08-16 17:22:03 - watchfiles.main - INFO - main - _log_changes - 308 - 6 changes detected
+2025-08-16 17:22:08 - watchfiles.main - INFO - main - _log_changes - 308 - 2 changes detected
+2025-08-16 17:22:08 - watchfiles.main - INFO - main - _log_changes - 308 - 1 change detected
+2025-08-16 17:22:08 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T11:52:08.858778', 'service': 'financial_service', 'function': 'shutdown', 'user_id': 'anonymous', 'status': 'success', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': None}
+2025-08-16 17:22:09 - watchfiles.main - INFO - main - _log_changes - 308 - 4 changes detected
+2025-08-16 17:22:09 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T11:52:09.595852', 'service': 'financial_service', 'function': 'startup', 'user_id': 'anonymous', 'status': 'success', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': None}
+2025-08-16 17:22:12 - watchfiles.main - INFO - main - _log_changes - 308 - 4 changes detected
+2025-08-16 17:22:12 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T11:52:12.831427', 'service': 'financial_service', 'function': 'shutdown', 'user_id': 'anonymous', 'status': 'success', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': None}
+2025-08-16 17:22:13 - watchfiles.main - INFO - main - _log_changes - 308 - 1 change detected
+2025-08-16 17:22:13 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T11:52:13.573712', 'service': 'financial_service', 'function': 'startup', 'user_id': 'anonymous', 'status': 'success', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': None}
+2025-08-16 17:22:15 - watchfiles.main - INFO - main - _log_changes - 308 - 6 changes detected
+2025-08-16 17:22:21 - watchfiles.main - INFO - main - _log_changes - 308 - 2 changes detected
+2025-08-16 17:22:24 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T11:52:24.693819', 'service': 'financial_service', 'function': 'shutdown', 'user_id': 'anonymous', 'status': 'success', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': None}
+2025-08-16 17:22:33 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T11:52:33.785012', 'service': 'financial_service', 'function': 'startup', 'user_id': 'anonymous', 'status': 'success', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': None}
+2025-08-16 17:23:21 - financial_service - ERROR - logger - log_metadata - 78 - API_CALL_ERROR: {'timestamp': '2025-08-16T11:53:21.823416', 'service': 'financial_service', 'function': 'get_stock_data', 'user_id': '75059298-b9e6-47f6-bb51-1c5493f8d869', 'status': 'error', 'duration_ms': 0.009000000000000001, 'cache_hit': False, 'api_source': None, 'error': "name 'prices' is not defined"}
+2025-08-16 17:23:21 - financial_service - ERROR - logger - log_metadata - 78 - API_CALL_ERROR: {'timestamp': '2025-08-16T11:53:21.823985', 'service': 'financial_service', 'function': 'api_stock_data', 'user_id': '75059298-b9e6-47f6-bb51-1c5493f8d869', 'status': 'error', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': "name 'prices' is not defined"}
+2025-08-16 17:26:49 - watchfiles.main - INFO - main - _log_changes - 308 - 2 changes detected
+2025-08-16 17:26:49 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T11:56:49.890663', 'service': 'financial_service', 'function': 'shutdown', 'user_id': 'anonymous', 'status': 'success', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': None}
+2025-08-16 17:26:50 - watchfiles.main - INFO - main - _log_changes - 308 - 1 change detected
+2025-08-16 17:26:50 - watchfiles.main - INFO - main - _log_changes - 308 - 1 change detected
+2025-08-16 17:26:51 - watchfiles.main - INFO - main - _log_changes - 308 - 4 changes detected
+2025-08-16 17:26:51 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T11:56:51.694610', 'service': 'financial_service', 'function': 'startup', 'user_id': 'anonymous', 'status': 'success', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': None}
+2025-08-16 17:26:51 - watchfiles.main - INFO - main - _log_changes - 308 - 3 changes detected
+2025-08-16 17:26:52 - watchfiles.main - INFO - main - _log_changes - 308 - 1 change detected
+2025-08-16 17:26:53 - watchfiles.main - INFO - main - _log_changes - 308 - 1 change detected
+2025-08-16 17:26:53 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T11:56:53.618151', 'service': 'financial_service', 'function': 'shutdown', 'user_id': 'anonymous', 'status': 'success', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': None}
+2025-08-16 17:26:53 - watchfiles.main - INFO - main - _log_changes - 308 - 1 change detected
+2025-08-16 17:26:54 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T11:56:54.180254', 'service': 'financial_service', 'function': 'startup', 'user_id': 'anonymous', 'status': 'success', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': None}
+2025-08-16 17:26:58 - watchfiles.main - INFO - main - _log_changes - 308 - 2 changes detected
+2025-08-16 17:27:01 - watchfiles.main - INFO - main - _log_changes - 308 - 7 changes detected
+2025-08-16 17:27:01 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T11:57:01.562111', 'service': 'financial_service', 'function': 'shutdown', 'user_id': 'anonymous', 'status': 'success', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': None}
+2025-08-16 17:27:01 - watchfiles.main - INFO - main - _log_changes - 308 - 1 change detected
+2025-08-16 17:27:02 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T11:57:02.327943', 'service': 'financial_service', 'function': 'startup', 'user_id': 'anonymous', 'status': 'success', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': None}
+2025-08-16 17:27:03 - watchfiles.main - INFO - main - _log_changes - 308 - 2 changes detected
+2025-08-16 17:27:07 - watchfiles.main - INFO - main - _log_changes - 308 - 1 change detected
+2025-08-16 17:27:07 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T11:57:07.486824', 'service': 'financial_service', 'function': 'shutdown', 'user_id': 'anonymous', 'status': 'success', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': None}
+2025-08-16 17:27:07 - watchfiles.main - INFO - main - _log_changes - 308 - 4 changes detected
+2025-08-16 17:27:08 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T11:57:08.060662', 'service': 'financial_service', 'function': 'startup', 'user_id': 'anonymous', 'status': 'success', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': None}
+2025-08-16 17:27:10 - watchfiles.main - INFO - main - _log_changes - 308 - 2 changes detected
+2025-08-16 17:27:12 - watchfiles.main - INFO - main - _log_changes - 308 - 6 changes detected
+2025-08-16 17:27:12 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T11:57:12.412654', 'service': 'financial_service', 'function': 'shutdown', 'user_id': 'anonymous', 'status': 'success', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': None}
+2025-08-16 17:27:12 - watchfiles.main - INFO - main - _log_changes - 308 - 1 change detected
+2025-08-16 17:27:13 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T11:57:13.049303', 'service': 'financial_service', 'function': 'startup', 'user_id': 'anonymous', 'status': 'success', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': None}
+2025-08-16 17:27:16 - watchfiles.main - INFO - main - _log_changes - 308 - 2 changes detected
+2025-08-16 17:27:42 - watchfiles.main - INFO - main - _log_changes - 308 - 1 change detected
+2025-08-16 17:27:42 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T11:57:42.581741', 'service': 'financial_service', 'function': 'shutdown', 'user_id': 'anonymous', 'status': 'success', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': None}
+2025-08-16 17:27:42 - watchfiles.main - INFO - main - _log_changes - 308 - 1 change detected
+2025-08-16 17:27:43 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T11:57:43.447423', 'service': 'financial_service', 'function': 'startup', 'user_id': 'anonymous', 'status': 'success', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': None}
+2025-08-16 17:27:46 - watchfiles.main - INFO - main - _log_changes - 308 - 3 changes detected
+2025-08-16 17:27:47 - watchfiles.main - INFO - main - _log_changes - 308 - 2 changes detected
+2025-08-16 17:28:28 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T11:58:28.226980', 'service': 'financial_service', 'function': 'shutdown', 'user_id': 'anonymous', 'status': 'success', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': None}
+2025-08-16 17:28:30 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T11:58:30.911420', 'service': 'financial_service', 'function': 'startup', 'user_id': 'anonymous', 'status': 'success', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': None}
+2025-08-16 17:28:32 - watchfiles.main - INFO - main - _log_changes - 308 - 2 changes detected
+2025-08-16 17:29:00 - watchfiles.main - INFO - main - _log_changes - 308 - 2 changes detected
+2025-08-16 17:29:03 - watchfiles.main - INFO - main - _log_changes - 308 - 1 change detected
+2025-08-16 17:29:04 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T11:59:04.528107', 'service': 'financial_service', 'function': 'get_stock_data', 'user_id': 'cd910b9d-f614-4426-bb83-0ca26db58fa9', 'status': 'success', 'duration_ms': 1078.219, 'cache_hit': False, 'api_source': 'yahoo_finance', 'error': None}
+2025-08-16 17:29:04 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T11:59:04.529377', 'service': 'financial_service', 'function': 'api_stock_data', 'user_id': 'cd910b9d-f614-4426-bb83-0ca26db58fa9', 'status': 'success', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': None}
+2025-08-16 17:29:07 - watchfiles.main - INFO - main - _log_changes - 308 - 1 change detected
+2025-08-16 17:32:50 - watchfiles.main - INFO - main - _log_changes - 308 - 1 change detected
+2025-08-16 17:32:51 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T12:02:51.039405', 'service': 'financial_service', 'function': 'shutdown', 'user_id': 'anonymous', 'status': 'success', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': None}
+2025-08-16 17:32:51 - watchfiles.main - INFO - main - _log_changes - 308 - 1 change detected
+2025-08-16 17:32:51 - watchfiles.main - INFO - main - _log_changes - 308 - 3 changes detected
+2025-08-16 17:32:51 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T12:02:51.889512', 'service': 'financial_service', 'function': 'startup', 'user_id': 'anonymous', 'status': 'success', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': None}
+2025-08-16 17:32:59 - watchfiles.main - INFO - main - _log_changes - 308 - 4 changes detected
+2025-08-16 17:32:59 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T12:02:59.379057', 'service': 'financial_service', 'function': 'shutdown', 'user_id': 'anonymous', 'status': 'success', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': None}
+2025-08-16 17:32:59 - watchfiles.main - INFO - main - _log_changes - 308 - 1 change detected
+2025-08-16 17:33:00 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T12:03:00.197826', 'service': 'financial_service', 'function': 'startup', 'user_id': 'anonymous', 'status': 'success', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': None}
+2025-08-16 17:33:01 - watchfiles.main - INFO - main - _log_changes - 308 - 6 changes detected
+2025-08-16 17:33:08 - watchfiles.main - INFO - main - _log_changes - 308 - 2 changes detected
+2025-08-16 17:33:31 - watchfiles.main - INFO - main - _log_changes - 308 - 1 change detected
+2025-08-16 17:33:32 - financial_service - ERROR - logger - log_metadata - 78 - API_CALL_ERROR: {'timestamp': '2025-08-16T12:03:32.361676', 'service': 'financial_service', 'function': 'get_news_data', 'user_id': 'e4c23170-dd42-422b-ac42-7524eaa57e48', 'status': 'error', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': "'set' object has no attribute 'get'"}
+2025-08-16 17:33:32 - financial_service - ERROR - logger - log_metadata - 78 - API_CALL_ERROR: {'timestamp': '2025-08-16T12:03:32.362601', 'service': 'financial_service', 'function': 'api_news', 'user_id': 'e4c23170-dd42-422b-ac42-7524eaa57e48', 'status': 'error', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': "'set' object has no attribute 'get'"}
+2025-08-16 17:33:35 - watchfiles.main - INFO - main - _log_changes - 308 - 2 changes detected
+2025-08-16 17:35:53 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T12:05:53.847220', 'service': 'financial_service', 'function': 'shutdown', 'user_id': 'anonymous', 'status': 'success', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': None}
+2025-08-16 19:27:50 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T13:57:50.169412', 'service': 'financial_service', 'function': 'startup', 'user_id': 'anonymous', 'status': 'success', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': None}
+2025-08-16 19:27:53 - watchfiles.main - INFO - main - _log_changes - 308 - 5 changes detected
+2025-08-16 19:27:57 - watchfiles.main - INFO - main - _log_changes - 308 - 11 changes detected
+2025-08-16 19:28:39 - watchfiles.main - INFO - main - _log_changes - 308 - 1 change detected
+2025-08-16 19:28:40 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T13:58:40.591767', 'service': 'financial_service', 'function': 'get_stock_data', 'user_id': '65b3fd4e-3945-40b6-b066-65d27a5f62b0', 'status': 'success', 'duration_ms': 1128.1429999999998, 'cache_hit': False, 'api_source': 'yahoo_finance', 'error': None}
+2025-08-16 19:28:40 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T13:58:40.592750', 'service': 'financial_service', 'function': 'api_stock_data', 'user_id': '65b3fd4e-3945-40b6-b066-65d27a5f62b0', 'status': 'success', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': None}
+2025-08-16 19:28:43 - watchfiles.main - INFO - main - _log_changes - 308 - 1 change detected
+2025-08-16 19:29:22 - watchfiles.main - INFO - main - _log_changes - 308 - 1 change detected
+2025-08-16 19:29:22 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T13:59:22.707566', 'service': 'financial_service', 'function': 'get_stock_data', 'user_id': '09016dbe-cc3e-4ca5-800b-d9a1a7a31a8f', 'status': 'success', 'duration_ms': 316.304, 'cache_hit': False, 'api_source': 'yahoo_finance', 'error': None}
+2025-08-16 19:29:26 - watchfiles.main - INFO - main - _log_changes - 308 - 1 change detected
+2025-08-16 20:27:33 - watchfiles.main - INFO - main - _log_changes - 308 - 1 change detected
+2025-08-16 20:27:33 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T14:57:33.905818', 'service': 'financial_service', 'function': 'shutdown', 'user_id': 'anonymous', 'status': 'success', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': None}
+2025-08-16 20:27:34 - watchfiles.main - INFO - main - _log_changes - 308 - 1 change detected
+2025-08-16 20:27:34 - watchfiles.main - INFO - main - _log_changes - 308 - 1 change detected
+2025-08-16 20:27:35 - watchfiles.main - INFO - main - _log_changes - 308 - 1 change detected
+2025-08-16 20:27:35 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T14:57:35.759253', 'service': 'financial_service', 'function': 'startup', 'user_id': 'anonymous', 'status': 'success', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': None}
+2025-08-16 20:27:41 - watchfiles.main - INFO - main - _log_changes - 308 - 2 changes detected
+2025-08-16 20:27:43 - watchfiles.main - INFO - main - _log_changes - 308 - 4 changes detected
+2025-08-16 20:27:43 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T14:57:43.849664', 'service': 'financial_service', 'function': 'shutdown', 'user_id': 'anonymous', 'status': 'success', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': None}
+2025-08-16 20:27:44 - watchfiles.main - INFO - main - _log_changes - 308 - 1 change detected
+2025-08-16 20:27:44 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T14:57:44.623381', 'service': 'financial_service', 'function': 'startup', 'user_id': 'anonymous', 'status': 'success', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': None}
+2025-08-16 20:27:45 - watchfiles.main - INFO - main - _log_changes - 308 - 2 changes detected
+2025-08-16 20:27:51 - watchfiles.main - INFO - main - _log_changes - 308 - 2 changes detected
+2025-08-16 20:27:58 - watchfiles.main - INFO - main - _log_changes - 308 - 2 changes detected
+2025-08-16 20:28:01 - watchfiles.main - INFO - main - _log_changes - 308 - 2 changes detected
+2025-08-16 20:28:17 - watchfiles.main - INFO - main - _log_changes - 308 - 1 change detected
+2025-08-16 20:28:18 - watchfiles.main - INFO - main - _log_changes - 308 - 1 change detected
+2025-08-16 20:28:21 - watchfiles.main - INFO - main - _log_changes - 308 - 1 change detected
+2025-08-16 20:28:21 - watchfiles.main - INFO - main - _log_changes - 308 - 1 change detected
+2025-08-16 20:28:23 - watchfiles.main - INFO - main - _log_changes - 308 - 3 changes detected
+2025-08-16 20:28:25 - financial_service - INFO - logger - log_metadata - 82 - API_CALL: {'timestamp': '2025-08-16T14:58:25.585459', 'service': 'financial_service', 'function': 'shutdown', 'user_id': 'anonymous', 'status': 'success', 'duration_ms': None, 'cache_hit': False, 'api_source': None, 'error': None}
