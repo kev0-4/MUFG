@@ -21,6 +21,10 @@ class EnhanceRequest(BaseModel):
     class Config:
         arbitrary_types_allowed = True  # Allow arbitrary types like 'Any'
 
+class StockSentimentsRequest(BaseModel):
+    stocks: list[str]
+    scenario: str
+    user_id: str
 
 @app.post("/nlp/query")
 async def process_query(request: QueryRequest):
@@ -110,6 +114,73 @@ async def enhance_response(request: EnhanceRequest):
             "status": "error"
         })
         raise HTTPException(status_code=500, detail=f"Server error: {str(e)}")
+
+
+@app.post("/nlp/stock-sentiments")
+async def stock_sentiments(request: StockSentimentsRequest):
+    """
+    Fetch news sentiments for a list of stocks under a given scenario.
+
+    Args:
+        request (StockSentimentsRequest): Contains stocks, scenario, and user_id.
+
+    Returns:
+        Dict[str, Any]: Sentiment scores and summaries for each stock.
+    """
+    try:
+        if not request.stocks:
+            raise ValueError("Stocks list must not be empty")
+        if not request.scenario:
+            raise ValueError("Scenario must not be empty")
+        if not request.user_id:
+            raise ValueError("User ID must not be empty")
+
+        # Fetch sentiments for each stock
+        sentiments = {}
+        for stock in request.stocks:
+            query = f"{stock} {request.scenario}"
+            sentiment_result = orchestrate_query(query, request.user_id)
+            sentiments[stock] = sentiment_result.get("news_sentiment", {
+                "sentiment": 0.0,
+                "summary": f"No sentiment data for {stock} in {request.scenario} scenario"
+            })
+
+        result = {"stock_sentiments": sentiments}
+
+        log_metadata({
+            "service": "main",
+            "endpoint": "/nlp/stock-sentiments",
+            "user_id": request.user_id,
+            "stocks": request.stocks,
+            "scenario": request.scenario,
+            "result": result,
+            "status": "success"
+        })
+        return result
+
+    except ValueError as ve:
+        log_metadata({
+            "service": "main",
+            "endpoint": "/nlp/stock-sentiments",
+            "user_id": request.user_id,
+            "stocks": request.stocks,
+            "scenario": request.scenario,
+            "error": str(ve),
+            "status": "error"
+        })
+        raise HTTPException(status_code=400, detail=str(ve))
+    except Exception as e:
+        log_metadata({
+            "service": "main",
+            "endpoint": "/nlp/stock-sentiments",
+            "user_id": request.user_id,
+            "stocks": request.stocks,
+            "scenario": request.scenario,
+            "error": str(e),
+            "status": "error"
+        })
+        raise HTTPException(status_code=500, detail=f"Server error: {str(e)}")
+
 
 if __name__ == "__main__":
     import uvicorn
