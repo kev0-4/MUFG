@@ -1,29 +1,32 @@
-from typing import Dict, Any
-from datetime import datetime, timedelta
-import pandas as pd
 import firebase_admin
 from firebase_admin import credentials, firestore
-from config.settings import FIREBASE_CREDENTIALS_PATH
+import sys
 
-# Initialize Firebase Admin SDK (only once)
-if not firebase_admin._apps:
+# Firebase configuration (update with your service account key path)
+FIREBASE_CREDENTIALS_PATH = 'serviceAccountKey.json'
+
+# Initialize Firebase Admin SDK
+try:
     cred = credentials.Certificate(FIREBASE_CREDENTIALS_PATH)
     firebase_admin.initialize_app(cred)
+except Exception as e:
+    print(f"Error initializing Firebase: {e}")
+    sys.exit(1)
+
 db = firestore.client()
 
-def fetch_user_data(user_id: str) -> Dict[str, Any]:
+def fetch_user_data(user_id: str) -> dict:
     """
-    Fetch user data from Firebase Firestore, including stock holdings.
+    Fetch user data from Firebase Firestore for testing.
 
     Args:
         user_id (str): Unique user identifier.
 
     Returns:
-        Dict[str, Any]: User data with user_id, super_balance, and stock_holdings.
+        dict: User data including name, email, super_balance, and stock_holdings.
 
     Raises:
-        ValueError: If user_id is invalid or user not found.
-        Exception: For other Firestore errors.
+        Exception: If fetch fails.
     """
     try:
         if not user_id:
@@ -47,10 +50,9 @@ def fetch_user_data(user_id: str) -> Dict[str, Any]:
         holdings = holdings_query.get()
         stock_holdings = [
             {
-                'stock': holding.to_dict()['symbol'],
+                'symbol': holding.to_dict()['symbol'],
                 'quantity': holding.to_dict()['quantity'],
                 'currentPrice': holding.to_dict()['currentPrice']
-                # Note: historical_data not included (requires external API or schema update)
             }
             for holding in holdings
             if holding.to_dict()['assetType'] == 'stock'
@@ -58,15 +60,34 @@ def fetch_user_data(user_id: str) -> Dict[str, Any]:
 
         # Construct response
         result = {
-            'user_id': user_id,
+            'name': user_data.get('name', ''),
+            'email': user_data.get('email', ''),
             'super_balance': super_balance,
             'stock_holdings': stock_holdings
-            # Note: age, risk_tolerance, historical_return not in schema
         }
 
         return result
 
-    except ValueError as ve:
-        raise ValueError(f"Failed to fetch user data: {str(ve)}")
     except Exception as e:
-        raise Exception(f"Unexpected error fetching user data: {str(e)}")
+        print(f"Error fetching user data: {e}")
+        raise
+
+# Test the function
+def main():
+    test_user_id = 'uid1'  # From seeded data
+    print(f"Testing fetch_user_data for user_id: {test_user_id}")
+    try:
+        user_data = fetch_user_data(test_user_id)
+        print("User Data:")
+        print(f"Name: {user_data['name']}")
+        print(f"Email: {user_data['email']}")
+        print(f"Super Balance: AUD {user_data['super_balance']:.2f}")
+        print("Stock Holdings:")
+        for holding in user_data['stock_holdings']:
+            print(f"  Symbol: {holding['symbol']}, Quantity: {holding['quantity']}, Current Price: AUD {holding['currentPrice']:.2f}")
+    except Exception as e:
+        print(f"Test failed: {e}")
+        sys.exit(1)
+
+if __name__ == '__main__':
+    main()
