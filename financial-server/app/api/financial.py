@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends, BackgroundTasks
 from typing import Optional
 from datetime import datetime, date, timedelta
+from app.services.financial_service import financial_service
 import uuid
 
 from app.schemas.financial import (
@@ -129,3 +130,11 @@ async def get_latest_stock_price(
             "error": str(e)
         })
         raise HTTPException(status_code=500, detail="Failed to fetch latest stock price")
+    
+@router.get("/portfolio/{user_id}")
+async def get_portfolio(user_id: str):
+    try:
+        data = await financial_service.get_user_portfolio_data(user_id)
+        return data
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
