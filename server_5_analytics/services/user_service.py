@@ -11,6 +11,7 @@ if not firebase_admin._apps:
     firebase_admin.initialize_app(cred)
 db = firestore.client()
 
+
 def fetch_user_data(user_id: str) -> Dict[str, Any]:
     """
     Fetch user data from Firebase Firestore, including stock holdings.
@@ -38,12 +39,15 @@ def fetch_user_data(user_id: str) -> Dict[str, Any]:
         user_data = user_doc.to_dict()
 
         # Fetch portfolios
-        portfolio_query = db.collection('portfolios').where('userId', '==', user_id)
+        portfolio_query = db.collection(
+            'portfolios').where('userId', '==', user_id)
         portfolios = portfolio_query.get()
-        super_balance = sum(portfolio.to_dict()['totalValue'] for portfolio in portfolios)
+        super_balance = sum(portfolio.to_dict()[
+                            'totalValue'] for portfolio in portfolios)
 
         # Fetch holdings
-        holdings_query = db.collection('holdings').where('userId', '==', user_id)
+        holdings_query = db.collection(
+            'holdings').where('userId', '==', user_id)
         holdings = holdings_query.get()
         stock_holdings = [
             {
@@ -63,7 +67,7 @@ def fetch_user_data(user_id: str) -> Dict[str, Any]:
             'stock_holdings': stock_holdings
             # Note: age, risk_tolerance, historical_return not in schema
         }
-
+        print(result)
         return result
 
     except ValueError as ve:
