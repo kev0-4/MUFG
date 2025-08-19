@@ -7,3 +7,5 @@
 **/venv/
 **/-p/
 **/serviceAccountKey.json
+*.log
+

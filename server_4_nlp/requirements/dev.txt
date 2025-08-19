@@ -16,3 +16,4 @@ webdriver-manager
 transformers
 poml
 redis
+firebase-admin

@@ -8,4 +8,4 @@ redis==5.0.8
 prophet==1.1.5
 torch==2.4.1
 numpy<2.0
-firebase_admin
+firebase-admin
