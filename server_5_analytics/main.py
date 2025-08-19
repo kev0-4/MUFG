@@ -2,9 +2,16 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from typing import Dict, Optional, Any
 from services.analytics_service import simulate_superannuation, recommend_strategy, calibrate_risk, scenario_simulation
+from services.user_service import fetch_user_data
 from utils.logger import log_metadata
 
-app = FastAPI(title="FinGuard AI Analytics Server", description="Analytics for superannuation planning")
+app = FastAPI(title="FinGuard AI Analytics Server",
+              description="Analytics for superannuation planning")
+
+
+class UserRequest(BaseModel):
+    user_id: str
+
 
 class SimulateRequest(BaseModel):
     simulation_data: Dict[str, Any]
@@ -13,9 +20,11 @@ class SimulateRequest(BaseModel):
     class Config:
         arbitrary_types_allowed = True
 
+
 class RecommendRequest(BaseModel):
     user_id: str
     scenario: Optional[str] = None
+
 
 class RiskRequest(BaseModel):
     user_id: str
@@ -24,6 +33,7 @@ class RiskRequest(BaseModel):
 
     class Config:
         arbitrary_types_allowed = True
+
 
 class ScenarioRequest(BaseModel):
     user_id: str
@@ -34,13 +44,43 @@ class ScenarioRequest(BaseModel):
     class Config:
         arbitrary_types_allowed = True
 
+
+@app.post("/analytics/user-data")
+async def user_data_endpoint(request: UserRequest):
+    """
+    Fetch user data including super_balance and stock_holdings from Financial Server.
+    """
+    try:
+        result = fetch_user_data(request.user_id)
+        return result
+    except ValueError as ve:
+        log_metadata({
+            "service": "main",
+            "endpoint": "/analytics/user-data",
+            "user_id": request.user_id,
+            "error": str(ve),
+            "status": "error"
+        })
+        raise HTTPException(status_code=400, detail=str(ve))
+    except Exception as e:
+        log_metadata({
+            "service": "main",
+            "endpoint": "/analytics/user-data",
+            "user_id": request.user_id,
+            "error": str(e),
+            "status": "error"
+        })
+        raise HTTPException(status_code=500, detail=f"Server error: {str(e)}")
+
+
 @app.post("/analytics/simulate")
 async def simulate_endpoint(request: SimulateRequest):
     """
     Simulate superannuation projections with Prophet forecasting.
     """
     try:
-        result = simulate_superannuation(request.simulation_data, request.user_id)
+        result = simulate_superannuation(
+            request.simulation_data, request.user_id)
         log_metadata({
             "service": "main",
             "endpoint": "/analytics/simulate",
@@ -70,6 +110,7 @@ async def simulate_endpoint(request: SimulateRequest):
             "status": "error"
         })
         raise HTTPException(status_code=500, detail=f"Server error: {str(e)}")
+
 
 @app.post("/analytics/recommend")
 async def recommend_endpoint(request: RecommendRequest):
@@ -108,13 +149,15 @@ async def recommend_endpoint(request: RecommendRequest):
         })
         raise HTTPException(status_code=500, detail=f"Server error: {str(e)}")
 
+
 @app.post("/analytics/risk")
 async def risk_endpoint(request: RiskRequest):
     """
     Calibrate risk based on scenario and economic conditions.
     """
     try:
-        result = calibrate_risk(request.user_id, request.scenario, request.economic_conditions)
+        result = calibrate_risk(
+            request.user_id, request.scenario, request.economic_conditions)
         log_metadata({
             "service": "main",
             "endpoint": "/analytics/risk",
@@ -145,13 +188,15 @@ async def risk_endpoint(request: RiskRequest):
         })
         raise HTTPException(status_code=500, detail=f"Server error: {str(e)}")
 
+
 @app.post("/analytics/scenario")
 async def scenario_endpoint(request: ScenarioRequest):
     """
     Run Monte Carlo scenario simulation with news sentiment.
     """
     try:
-        result = scenario_simulation(request.user_id, request.scenario, request.monte_carlo_params, request.economic_conditions)
+        result = scenario_simulation(
+            request.user_id, request.scenario, request.monte_carlo_params, request.economic_conditions)
         log_metadata({
             "service": "main",
             "endpoint": "/analytics/scenario",

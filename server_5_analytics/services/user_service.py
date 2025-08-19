@@ -1,20 +1,14 @@
 from typing import Dict, Any
 from datetime import datetime, timedelta
 import pandas as pd
-import firebase_admin
-from firebase_admin import credentials, firestore
-from config.settings import FIREBASE_CREDENTIALS_PATH
-
-# Initialize Firebase Admin SDK (only once)
-if not firebase_admin._apps:
-    cred = credentials.Certificate(FIREBASE_CREDENTIALS_PATH)
-    firebase_admin.initialize_app(cred)
-db = firestore.client()
+import requests
+from config.settings import FINANCIAL_SERVER_URL
+from utils.logger import log_metadata
 
 
 def fetch_user_data(user_id: str) -> Dict[str, Any]:
     """
-    Fetch user data from Firebase Firestore, including stock holdings.
+    Fetch user data from Financial Server, including stock holdings and historical data.
 
     Args:
         user_id (str): Unique user identifier.
@@ -24,53 +18,111 @@ def fetch_user_data(user_id: str) -> Dict[str, Any]:
 
     Raises:
         ValueError: If user_id is invalid or user not found.
-        Exception: For other Firestore errors.
+        Exception: For other API errors.
     """
     try:
         if not user_id:
             raise ValueError("User ID must be a non-empty string")
 
-        # Fetch user document
-        user_ref = db.collection('users').document(user_id)
-        user_doc = user_ref.get()
-        if not user_doc.exists:
-            raise ValueError(f"User {user_id} not found")
+        # Fetch portfolio data
+        portfolio_url = f"{FINANCIAL_SERVER_URL}/api/portfolio/{user_id}"
+        portfolio_response = requests.get(portfolio_url, timeout=5)
+        portfolio_response.raise_for_status()
+        portfolio_data = portfolio_response.json()
+        # print("FINANCIAL_SERVER_URL:", FINANCIAL_SERVER_URL)
+        # print("User ID:", user_id)
+        # print("Portfolio URL:", portfolio_url)
+        # print("Portfolio Response (raw):", portfolio_response.text)
+        # print("Portfolio Data (parsed):", portfolio_data)
 
-        user_data = user_doc.to_dict()
+        # Validate response
+        if not portfolio_data.get("user") or not portfolio_data.get("portfolio") or not portfolio_data.get("holdings"):
+            raise ValueError(f"Invalid portfolio data for user {user_id}")
+        print("---Passed validate response---")
+        # Fetch historical data for stocks
+        stock_holdings = []
+        start_date = (datetime.now() - timedelta(days=365)
+                      ).strftime("%Y-%m-%d")  # 1 year ago
+        end_date = datetime.now().strftime("%Y-%m-%d")  # Today
+        for holding in portfolio_data["holdings"]:
+            if holding["assetType"] != "stock":
+                continue
 
-        # Fetch portfolios
-        portfolio_query = db.collection(
-            'portfolios').where('userId', '==', user_id)
-        portfolios = portfolio_query.get()
-        super_balance = sum(portfolio.to_dict()[
-                            'totalValue'] for portfolio in portfolios)
-
-        # Fetch holdings
-        holdings_query = db.collection(
-            'holdings').where('userId', '==', user_id)
-        holdings = holdings_query.get()
-        stock_holdings = [
-            {
-                'stock': holding.to_dict()['symbol'],
-                'quantity': holding.to_dict()['quantity'],
-                'currentPrice': holding.to_dict()['currentPrice']
-                # Note: historical_data not included (requires external API or schema update)
+            # Fetch historical stock data
+            stock_data_url = f"{FINANCIAL_SERVER_URL}/api/stock/data"
+            stock_data_payload = {
+                "ticker": holding["symbol"],
+                "start_date": start_date,
+                "end_date": end_date
             }
-            for holding in holdings
-            if holding.to_dict()['assetType'] == 'stock'
-        ]
+            stock_data_response = requests.post(
+                stock_data_url, json=stock_data_payload, timeout=5)
+            stock_data_response.raise_for_status()
+            stock_data = stock_data_response.json()
+
+            # Convert prices to DataFrame
+            historical_data = pd.DataFrame(stock_data["prices"])
+            if not historical_data.empty:
+                historical_data["ds"] = pd.to_datetime(historical_data["date"])
+                historical_data["y"] = historical_data["close"].astype(float)
+                historical_data = historical_data[["ds", "y"]]
+            else:
+                # Fallback: Use currentPrice for a single data point
+                historical_data = pd.DataFrame({
+                    "ds": [datetime.now()],
+                    "y": [holding["currentPrice"]]
+                })
+
+            stock_holdings.append({
+                "stock": holding["symbol"],
+                "quantity": holding["quantity"],
+                "currentPrice": holding["currentPrice"],
+                "historical_data": historical_data
+            })
 
         # Construct response
         result = {
-            'user_id': user_id,
-            'super_balance': super_balance,
-            'stock_holdings': stock_holdings
-            # Note: age, risk_tolerance, historical_return not in schema
+            "user_id": user_id,
+            "super_balance": portfolio_data["portfolio"]["totalValue"],
+            "stock_holdings": stock_holdings
+            # Note: age, risk_tolerance, historical_return not available in Financial Server
         }
-        print(result)
+        # print("----printing results----")
+        # print(result)
+        print("--got results from user_Service just before returning--")
+        # log_metadata({
+        #     "service": "user_service",
+        #     "function": "fetch_user_data",
+        #     "user_id": user_id,
+        #     "status": "success",
+        #     "result": result
+        # })
         return result
 
     except ValueError as ve:
+        log_metadata({
+            "service": "user_service",
+            "function": "fetch_user_data",
+            "user_id": user_id,
+            "error": str(ve),
+            "status": "error"
+        })
         raise ValueError(f"Failed to fetch user data: {str(ve)}")
+    except requests.RequestException as re:
+        log_metadata({
+            "service": "user_service",
+            "function": "fetch_user_data",
+            "user_id": user_id,
+            "error": str(re),
+            "status": "error"
+        })
+        raise Exception(f"Financial Server error: {str(re)}")
     except Exception as e:
+        log_metadata({
+            "service": "user_service",
+            "function": "fetch_user_data",
+            "user_id": user_id,
+            "error": str(e),
+            "status": "error"
+        })
         raise Exception(f"Unexpected error fetching user data: {str(e)}")
