@@ -2,7 +2,7 @@
 setlocal EnableDelayedExpansion
 
 :: FinGuard Servers Initialization Script for Windows
-:: Creates virtual environments, installs dependencies, and runs Financial Server (port 8001), NLP Server (port 8000), and AI Analytics Server (port 8002)
+:: Runs Financial Server (port 8001), NLP Server (port 8000), and AI Analytics Server (port 8002)
 :: Usage: start_finguard_servers.bat [start|stop]
 
 :: Configuration
@@ -15,8 +15,6 @@ set ANALYTICS_VENV=%ANALYTICS_DIR%\analytics_venv
 set FINANCIAL_PORT=8001
 set NLP_PORT=8000
 set ANALYTICS_PORT=8002
-set LOG_DIR=logs
-
 
 :: Stop any running servers first
 echo Stopping any running servers...
@@ -27,87 +25,6 @@ taskkill /IM uvicorn.exe /F >nul 2>&1
 timeout /t 2 /nobreak >nul
 
 
-:: Create logs directory
-if not exist "%LOG_DIR%" mkdir "%LOG_DIR%"
-type nul > "%LOG_DIR%\financial_server.log"
-type nul > "%LOG_DIR%\nlp_server.log"
-type nul > "%LOG_DIR%\analytics_server.log"
-
-:: Set up Financial Server virtual environment and dependencies
-if not exist "%FINANCIAL_DIR%" (
-    echo Error: Directory %FINANCIAL_DIR% not found.
-    exit /b 1
-)
-if not exist "%FINANCIAL_DIR%\run_dev.py" (
-    echo Error: %FINANCIAL_DIR%\run_dev.py not found.
-    exit /b 1
-)
-if not exist "%FINANCIAL_VENV%" (
-    echo Creating virtual environment for Financial Server...
-    python -m venv "%FINANCIAL_VENV%"
-)
-call "%FINANCIAL_VENV%\Scripts\activate.bat"
-if exist "%FINANCIAL_DIR%\requirements.txt" (
-    echo Installing dependencies for Financial Server...
-    pip install --upgrade pip
-    pip install -r "%FINANCIAL_DIR%\requirements.txt"
-) else (
-    echo Error: %FINANCIAL_DIR%\requirements.txt not found.
-    call deactivate
-    exit /b 1
-)
-call deactivate
-
-:: Set up NLP Server virtual environment and dependencies
-if not exist "%NLP_DIR%" (
-    echo Error: Directory %NLP_DIR% not found.
-    exit /b 1
-)
-if not exist "%NLP_DIR%\main.py" (
-    echo Error: %NLP_DIR%\main.py not found.
-    exit /b 1
-)
-if not exist "%NLP_VENV%" (
-    echo Creating virtual environment for NLP Server...
-    python -m venv "%NLP_VENV%"
-)
-call "%NLP_VENV%\Scripts\activate.bat"
-if exist "%NLP_DIR%\requirements\dev.txt" (
-    echo Installing dependencies for NLP Server...
-    pip install --upgrade pip
-    pip install -r "%NLP_DIR%\requirements\dev.txt" --no-cache-dir
-) else (
-    echo Error: %NLP_DIR%\requirements\dev.txt not found.
-    call deactivate
-    exit /b 1
-)
-call deactivate
-
-:: Set up AI Analytics Server virtual environment and dependencies
-if not exist "%ANALYTICS_DIR%" (
-    echo Error: Directory %ANALYTICS_DIR% not found.
-    exit /b 1
-)
-if not exist "%ANALYTICS_DIR%\main.py" (
-    echo Error: %ANALYTICS_DIR%\main.py not found.
-    exit /b 1
-)
-if not exist "%ANALYTICS_VENV%" (
-    echo Creating virtual environment for AI Analytics Server...
-    python -m venv "%ANALYTICS_VENV%"
-)
-call "%ANALYTICS_VENV%\Scripts\activate.bat"
-if exist "%ANALYTICS_DIR%\requirements\dev.txt" (
-    echo Installing dependencies for AI Analytics Server...
-    pip install --upgrade pip
-    pip install -r "%ANALYTICS_DIR%\requirements\dev.txt"
-) else (
-    echo Error: %ANALYTICS_DIR%\requirements\dev.txt not found.
-    call deactivate
-    exit /b 1
-)
-call deactivate
-
 :: Start Financial Server
 :start_financial_server
 echo Starting Financial Server on port %FINANCIAL_PORT%...
@@ -117,7 +34,7 @@ cd "%FINANCIAL_DIR%" || (
     call deactivate
     exit /b 1
 )
-start /b uvicorn run_dev:app --reload --host 0.0.0.0 --port %FINANCIAL_PORT% > "..\%LOG_DIR%\financial_server.log" 2>&1
+start /b uvicorn run_dev:app --reload --host 0.0.0.0 --port %FINANCIAL_PORT%
 cd ..
 call deactivate
 
@@ -130,7 +47,7 @@ cd "%NLP_DIR%" || (
     call deactivate
     exit /b 1
 )
-start /b uvicorn main:app --reload --host 0.0.0.0 --port %NLP_PORT% > "..\%LOG_DIR%\nlp_server.log" 2>&1
+start /b uvicorn main:app --reload --host 0.0.0.0 --port %NLP_PORT%
 cd ..
 call deactivate
 
@@ -143,7 +60,7 @@ cd "%ANALYTICS_DIR%" || (
     call deactivate
     exit /b 1
 )
-start /b uvicorn main:app --reload --host 0.0.0.0 --port %ANALYTICS_PORT% > "..\%LOG_DIR%\analytics_server.log" 2>&1
+start /b uvicorn main:app --reload --host 0.0.0.0 --port %ANALYTICS_PORT%
 cd ..
 call deactivate
 
@@ -161,7 +78,7 @@ if "%1"=="start" (
     call :start_nlp_server
     ping 127.0.0.1 -n 3 >nul
     call :start_analytics_server
-    echo All servers started. Logs are in %LOG_DIR%.
+    echo All servers started.
     echo Swagger UIs:
     echo   Financial Server: http://localhost:%FINANCIAL_PORT%/docs
     echo   NLP Server: http://localhost:%NLP_PORT%/docs
