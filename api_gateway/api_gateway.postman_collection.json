@@ -1,0 +1,221 @@
+{
+	"info": {
+		"_postman_id": "abd5723c-434c-44a3-bb15-dba2e30a0213",
+		"name": "For grok",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "45489108",
+		"_collection_link": "https://kev-9357696.postman.co/workspace/MUFG~73b20a41-978b-4c1d-b78f-53652bf5c511/collection/45489108-abd5723c-434c-44a3-bb15-dba2e30a0213?action=share&source=collection_link&creator=45489108"
+	},
+	"item": [
+		{
+			"name": "user stock sentiments Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"pm.test(\"Response has error message\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.property('detail');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"stocks\": [\"BHP.AX\", \"CBA.AX\"], \"scenario\": \"\", \"user_id\": \"user_123\"}"
+				},
+				"url": {
+					"raw": "http://localhost:8000/nlp/stock-sentiments",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"nlp",
+						"stock-sentiments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Valid Enhance - ELI5 Response Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Response has eli5_response\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.property('eli5_response').that.is.a('string');",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"simulation_data\": {\"projected_balance\": 360000.45, \"timeframe\": 10}, \"user_id\": \"uid1\", \"ai_prompt\": \"Use a savings analogy.\"}"
+				},
+				"url": {
+					"raw": "http://localhost:8000/nlp/enhance",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"nlp",
+						"enhance"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Valid Query - Stock Sentiment Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Response has news_sentiment\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.property('news_sentiment').that.is.an('object');",
+							"    pm.expect(jsonData.news_sentiment).to.have.property('sentiment').that.is.a('number');",
+							"    pm.expect(jsonData.news_sentiment).to.have.property('summary').that.is.a('string');",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"query\": \"BHP.AX recession\", \"user_id\": \"uid1\"}"
+				},
+				"url": {
+					"raw": "http://finguard-vm1.subnet03071017.vcn03071017.oraclevcn.com:8000/nlp/query",
+					"protocol": "http",
+					"host": [
+						"finguard-vm1",
+						"subnet03071017",
+						"vcn03071017",
+						"oraclevcn",
+						"com"
+					],
+					"port": "8000",
+					"path": [
+						"nlp",
+						"query"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "stock Info - finincial server",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"ticker\": \"MSFT\",\r\n  \"start_date\": \"2024-06-19\",\r\n  \"end_date\": \"2025-08-19\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8001/api/stock/latest/INTC",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8001",
+					"path": [
+						"api",
+						"stock",
+						"latest",
+						"INTC"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get stock data - finincial server",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"ticker\": \"INTC\",\r\n  \"start_date\": \"2025-07-20\",\r\n  \"end_date\": \"2025-08-15\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8001/api/stock/data",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8001",
+					"path": [
+						"api",
+						"stock",
+						"data"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
