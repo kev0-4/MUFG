@@ -11,6 +11,8 @@ from cryptography.hazmat.primitives import padding as sym_padding
 from cryptography.hazmat.backends import default_backend
 from utils.key_provider import load_private_key, load_public_key, setup_keys
 from utils.logger import log_metadata
+from utils.test_module import run_all_tests
+
 
 app = FastAPI(title="FinGuard API Gateway",
               description="Public API Gateway for FinGuard servers with E2E encryption.")
@@ -482,6 +484,25 @@ async def get_stock_data(request: Request):
 async def get_public_key():
     with open("keys/gateway_public_key.pem", "r") as f:
         return {"public_key": f.read()}
+
+
+@app.get("/api/test")
+async def test():
+    """API endpoint to run all tests"""
+    test_results = run_all_tests()
+    
+    # Count successes and failures
+    success_count = sum(1 for result in test_results if result["status"] == "success")
+    failure_count = len(test_results) - success_count
+    
+    return {
+        "total_tests": len(test_results),
+        "successful_tests": success_count,
+        "failed_tests": failure_count,
+        "results": test_results
+    }
+
+
 
 if __name__ == "__main__":
     import uvicorn
