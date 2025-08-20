@@ -1,0 +1,98 @@
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+positions:
+  filename: /tmp/positions.yaml
+clients:
+  - url: http://65.20.82.164:3100/loki/api/v1/push
+scrape_configs:
+  - job_name: api_gateway
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: api_gateway
+          __path__: /logs/api_gateway/api_gateway.log
+    pipeline_stages:
+      - regex:
+          expression: '^(?P<timestamp>\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2},\d{3}\s+-\s+)(?P<json>{.*})$'
+      - json:
+          expressions:
+            service: service
+            endpoint: endpoint
+            user_id: user_id
+            status: status
+            error: error
+      - labels:
+          service:
+          endpoint:
+          user_id:
+          status:
+          error:
+  - job_name: financial
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: financial
+          __path__: /logs/financial-server/logs/financial_server.log
+    pipeline_stages:
+      - regex:
+          expression: '^(?P<timestamp>\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2}\s+-\s+[^-]+\s+-\s+[^-]+\s+-\s+[^-]+\s+-\s+[^-]+\s+-\s+\d+\s+-\s+API_CALL:\s+)(?P<json>{.*})$'
+      - json:
+          expressions:
+            service: service
+            function: function
+            user_id: user_id
+            status: status
+            api_source: api_source
+            cache_hit: cache_hit
+      - labels:
+          service:
+          function:
+          user_id:
+          status:
+          api_source:
+          cache_hit:
+  - job_name: nlp
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: nlp
+          __path__: /logs/server_4_nlp/nlp_server.log
+    pipeline_stages:
+      - json:
+          expressions:
+            service: service
+            user_id: user_id
+            status: status
+            scenario: scenario
+      - labels:
+          service:
+          user_id:
+          status:
+          scenario:
+  - job_name: analytics
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: analytics
+          __path__: /logs/server_5_analytics/ai_analytics_server.log
+    pipeline_stages:
+      - regex:
+          expression: '^(?P<timestamp>\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2},\d{3}\s+-\s+)(?P<json>{.*})$'
+      - json:
+          expressions:
+            service: service
+            endpoint: endpoint
+            user_id: user_id
+            status: status
+            scenario: scenario
+      - labels:
+          service:
+          endpoint:
+          user_id:
+          status:
+          scenario:

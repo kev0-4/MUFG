@@ -1,0 +1,15 @@
+version: '3.8'
+services:
+  promtail:
+    image: grafana/promtail:3.1.1
+    volumes:
+      - ./promtail-config.yaml:/etc/promtail/promtail-config.yaml
+      - C:/Users/lemon/Desktop/Projects/MUFG:/logs:ro
+    command: -config.file=/etc/promtail/promtail-config.yaml
+    ports:
+      - "9080:9080"
+    networks:
+      - loki-net
+networks:
+  loki-net:
+    driver: bridge
