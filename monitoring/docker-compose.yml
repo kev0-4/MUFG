@@ -74,29 +74,6 @@ services:
     networks:
       - finguard-net
 
-  promtail:
-    image: grafana/promtail:3.1.1
-    volumes:
-      - ./promtail-config.yaml:/etc/promtail/promtail-config.yaml
-    command: -config.file=/etc/promtail/promtail-config.yaml
-    ports:
-      - "9080:9080"
-    environment:
-      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
-      - REDIS_PASSWORD=${REDIS_PASSWORD}
-      - FIREBASE_CREDENTIALS_PATH=${FIREBASE_CREDENTIALS_PATH}
-      - FINANCIAL_SERVER_URL=${FINANCIAL_SERVER_URL}
-      - NLP_SERVER_URL=${NLP_SERVER_URL}
-      - ANALYTICS_SERVER_URL=${ANALYTICS_SERVER_URL}
-      - REDIS_HOST=${REDIS_HOST}
-      - REDIS_PORT=${REDIS_PORT}
-    depends_on:
-      - api_gateway
-      - financial
-      - nlp
-      - analytics
-    networks:
-      - finguard-net
 
 networks:
   finguard-net:
