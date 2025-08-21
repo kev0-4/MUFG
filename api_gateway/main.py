@@ -492,7 +492,11 @@ async def get_stock_data(request: Request):
 async def get_public_key():
     with open("keys/gateway_public_key.pem", "r") as f:
         return {"public_key": f.read()}
-
+    
+@app.get("/api/public-private-key")
+async def get_public_key():
+    with open("keys/client_private_key.pem", "r") as f:
+        return {"private_key": f.read()}
 
 @app.get("/api/test")
 async def test():
