@@ -19,7 +19,7 @@ set APIGW_VENV=%APIGW_DIR%\apigw_venv
 set FINANCIAL_PORT=8001
 set NLP_PORT=8000
 set ANALYTICS_PORT=8002
-set APIGW_PORT=8003
+set APIGW_PORT=8080
 
 :: Stop any running servers first
 echo Stopping any running servers...

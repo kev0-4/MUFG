@@ -1,14 +1,13 @@
 import logging
-from datetime import datetime
 import json
-from typing import Any
+import sys
 
 logging.basicConfig(
-    filename='api_gateway.log',
     level=logging.INFO,
-    format='%(asctime)s - %(message)s'
+    format='%(asctime)s - %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S,%s',
+    handlers=[logging.StreamHandler(sys.stdout)]
 )
 
-def log_metadata(metadata: dict[str, Any]):
-    metadata["timestamp"] = datetime.utcnow().isoformat()
-    logging.info(json.dumps(metadata))
+def log_metadata(data: dict):
+    logging.info(json.dumps(data))

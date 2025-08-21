@@ -1,15 +1,103 @@
-version: '3.8'
+version: "3.8"
 services:
+  api_gateway:
+    build:
+      context: ../api_gateway
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - FIREBASE_CREDENTIALS_PATH=${FIREBASE_CREDENTIALS_PATH}
+      - FINANCIAL_SERVER_URL=${FINANCIAL_SERVER_URL}
+      - NLP_SERVER_URL=${NLP_SERVER_URL}
+      - ANALYTICS_SERVER_URL=${ANALYTICS_SERVER_URL}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+    volumes:
+      - ../api_gateway/keys:/app/keys:ro
+    networks:
+      - finguard-net
+
+  financial:
+    build:
+      context: ../financial-server
+      dockerfile: Dockerfile
+    ports:
+      - "8001:8001"
+    environment:
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - FIREBASE_CREDENTIALS_PATH=${FIREBASE_CREDENTIALS_PATH}
+      - FINANCIAL_SERVER_URL=${FINANCIAL_SERVER_URL}
+      - NLP_SERVER_URL=${NLP_SERVER_URL}
+      - ANALYTICS_SERVER_URL=${ANALYTICS_SERVER_URL}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+    networks:
+      - finguard-net
+
+  nlp:
+    build:
+      context: ../server_4_nlp
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - FIREBASE_CREDENTIALS_PATH=${FIREBASE_CREDENTIALS_PATH}
+      - FINANCIAL_SERVER_URL=${FINANCIAL_SERVER_URL}
+      - NLP_SERVER_URL=${NLP_SERVER_URL}
+      - ANALYTICS_SERVER_URL=${ANALYTICS_SERVER_URL}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+    networks:
+      - finguard-net
+
+  analytics:
+    build:
+      context: ../server_5_analytics
+      dockerfile: Dockerfile
+    ports:
+      - "8002:8002"
+    environment:
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - FIREBASE_CREDENTIALS_PATH=${FIREBASE_CREDENTIALS_PATH}
+      - FINANCIAL_SERVER_URL=${FINANCIAL_SERVER_URL}
+      - NLP_SERVER_URL=${NLP_SERVER_URL}
+      - ANALYTICS_SERVER_URL=${ANALYTICS_SERVER_URL}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+    networks:
+      - finguard-net
+
   promtail:
     image: grafana/promtail:3.1.1
     volumes:
       - ./promtail-config.yaml:/etc/promtail/promtail-config.yaml
-      - C:/Users/lemon/Desktop/Projects/MUFG:/logs:ro
     command: -config.file=/etc/promtail/promtail-config.yaml
     ports:
       - "9080:9080"
+    environment:
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - FIREBASE_CREDENTIALS_PATH=${FIREBASE_CREDENTIALS_PATH}
+      - FINANCIAL_SERVER_URL=${FINANCIAL_SERVER_URL}
+      - NLP_SERVER_URL=${NLP_SERVER_URL}
+      - ANALYTICS_SERVER_URL=${ANALYTICS_SERVER_URL}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+    depends_on:
+      - api_gateway
+      - financial
+      - nlp
+      - analytics
     networks:
-      - loki-net
+      - finguard-net
+
 networks:
-  loki-net:
+  finguard-net:
     driver: bridge
