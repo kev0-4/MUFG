@@ -26,10 +26,9 @@ ENDPOINTS = {
     "stock-sentiments": f"{API_GATEWAY_URL}/api/stock-sentiments",
     "enhance": f"{API_GATEWAY_URL}/api/enhance",
     "query": f"{API_GATEWAY_URL}/api/query",
-    "stock-latest": f"{API_GATEWAY_URL}/api/stock-latest/AAPL",
+    "stock-latest": f"{API_GATEWAY_URL}/api/stock-latest/INTC",
     "stock-data": f"{API_GATEWAY_URL}/api/stock-data",
-    "public-key": f"{API_GATEWAY_URL}/api/public-key",
-    "test": f"{API_GATEWAY_URL}/api/test"
+    "public-key": f"{API_GATEWAY_URL}/api/public-key"
 }
 
 
@@ -68,7 +67,8 @@ def encrypt_request(data: dict, public_key):
         padder = sym_padding.PKCS7(128).padder()
         padded_data = padder.update(json_data) + padder.finalize()
 
-        cipher = Cipher(algorithms.AES(aes_key), modes.CBC(iv), backend=default_backend())
+        cipher = Cipher(algorithms.AES(aes_key), modes.CBC(iv),
+                        backend=default_backend())
         encryptor = cipher.encryptor()
         encrypted_data = encryptor.update(padded_data) + encryptor.finalize()
 
@@ -111,9 +111,11 @@ def decrypt_response(encrypted_data: str, encrypted_key: str, iv: str, private_k
             ),
         )
 
-        cipher = Cipher(algorithms.AES(aes_key), modes.CBC(iv_bytes), backend=default_backend())
+        cipher = Cipher(algorithms.AES(aes_key), modes.CBC(
+            iv_bytes), backend=default_backend())
         decryptor = cipher.decryptor()
-        padded_data = decryptor.update(encrypted_data_bytes) + decryptor.finalize()
+        padded_data = decryptor.update(
+            encrypted_data_bytes) + decryptor.finalize()
 
         unpadder = sym_padding.PKCS7(128).unpadder()
         data = unpadder.update(padded_data) + unpadder.finalize()
@@ -126,11 +128,12 @@ def decrypt_response(encrypted_data: str, encrypted_key: str, iv: str, private_k
 
 
 def test_endpoint(endpoint_name, method, url, request_data=None):
-    print(Fore.MAGENTA + f"\n=== Testing {endpoint_name.upper()} ({method} {url}) ===")
+    print(Fore.MAGENTA +
+          f"\n=== Testing {endpoint_name.upper()} ({method} {url}) ===")
 
     # Load client private key
     client_private_key = None
-    if endpoint_name not in ["public-key", "test"]:
+    if endpoint_name != "public-key":
         if not os.path.exists(CLIENT_PRIVATE_KEY_PATH):
             print(Fore.RED + f"[ERROR] Missing {CLIENT_PRIVATE_KEY_PATH}")
             return False
@@ -139,7 +142,7 @@ def test_endpoint(endpoint_name, method, url, request_data=None):
 
     # Fetch server public key
     server_public_key = None
-    if endpoint_name not in ["public-key", "test"]:
+    if endpoint_name != "public-key":
         try:
             response = requests.get(PUBLIC_KEY_URL, timeout=5510)
             response.raise_for_status()
@@ -157,7 +160,8 @@ def test_endpoint(endpoint_name, method, url, request_data=None):
     if request_data:
         print(Fore.BLUE + f"[REQUEST] {request_data}")
         try:
-            encrypted_request = encrypt_request(request_data, server_public_key)
+            encrypted_request = encrypt_request(
+                request_data, server_public_key)
         except Exception:
             return False
 
@@ -176,7 +180,7 @@ def test_endpoint(endpoint_name, method, url, request_data=None):
         return False
 
     # Process response
-    if endpoint_name in ["public-key", "test"]:
+    if endpoint_name == "public-key":
         print(Fore.CYAN + f"[INFO] Response: {response_data}")
     else:
         if not all(k in response_data for k in ["encrypted_data", "encrypted_key", "iv"]):
@@ -191,38 +195,52 @@ def test_endpoint(endpoint_name, method, url, request_data=None):
             )
             print(Fore.GREEN + f"[DECRYPTED] {decrypted_response}")
         except Exception:
-            print(Fore.RED + "[ERROR] Decryption failed – check client_private_key.pem")
+            print(
+                Fore.RED + "[ERROR] Decryption failed – check client_private_key.pem")
             return False
 
     return True
 
 
 def test_all_endpoints():
-    print(Style.BRIGHT + Fore.MAGENTA + "\n=== Testing All FinGuard API Endpoints ===")
+    print(Style.BRIGHT + Fore.MAGENTA +
+          "\n=== Testing All FinGuard API Endpoints ===")
 
     test_cases = [
-        {"name": "public-key", "method": "GET", "url": ENDPOINTS["public-key"], "data": None},
-        {"name": "user-data", "method": "POST", "url": ENDPOINTS["user-data"], "data": {"user_id": "uid1"}},
-        {"name": "simulate", "method": "POST", "url": ENDPOINTS["simulate"], "data": {"user_id": "uid1", "simulation_data": {"amount": 10000, "stocks": ["AAPL", "GOOGL"], "duration_months": 12}}},
-        {"name": "recommend", "method": "POST", "url": ENDPOINTS["recommend"], "data": {"user_id": "uid1"}},
-        {"name": "stock-sentiments", "method": "POST", "url": ENDPOINTS["stock-sentiments"], "data": {"user_id": "uid1"}},
-        {"name": "enhance", "method": "POST", "url": ENDPOINTS["enhance"], "data": {"user_id": "uid1", "simulation_data": {"amount": 10000, "stocks": ["AAPL"]}, "ai_prompt": "Optimize for low risk"}},
-        {"name": "query", "method": "POST", "url": ENDPOINTS["query"], "data": {"user_id": "uid1", "query": "What is the stock market outlook for tech?"}},
-        {"name": "stock-latest", "method": "GET", "url": ENDPOINTS["stock-latest"], "data": {"user_id": "uid1"}},
-        {"name": "stock-data", "method": "POST", "url": ENDPOINTS["stock-data"], "data": {"ticker": "AAPL", "start_date": (datetime.now() - timedelta(days=30)).strftime("%Y-%m-%d"), "end_date": datetime.now().strftime("%Y-%m-%d")}},
-        {"name": "test", "method": "GET", "url": ENDPOINTS["test"], "data": None},
+        {"name": "public-key", "method": "GET",
+            "url": ENDPOINTS["public-key"], "data": None},
+        {"name": "user-data", "method": "POST",
+            "url": ENDPOINTS["user-data"], "data": {"user_id": "uid1"}},
+        {"name": "simulate", "method": "POST", "url": ENDPOINTS["simulate"], "data": {
+            "user_id": "uid1", "simulation_data": {"amount": 10000, "stocks": ["AAPL", "GOOGL"], "duration_months": 12}}},
+        {"name": "recommend", "method": "POST",
+            "url": ENDPOINTS["recommend"], "data": {"user_id": "uid1"}},
+        {"name": "stock-sentiments", "method": "POST",
+            "url": ENDPOINTS["stock-sentiments"], "data": {"user_id": "uid1"}},
+        {"name": "enhance", "method": "POST", "url": ENDPOINTS["enhance"], "data": {
+            "user_id": "uid1", "simulation_data": {"amount": 10000, "stocks": ["AAPL"]}, "ai_prompt": "Optimize for low risk"}},
+        {"name": "query", "method": "POST", "url": ENDPOINTS["query"], "data": {
+            "user_id": "uid1", "query": "What is the stock market outlook for tech?"}},
+        {"name": "stock-latest", "method": "GET",
+            "url": ENDPOINTS["stock-latest"], "data": {"user_id": "uid1"}},
+        {"name": "stock-data", "method": "POST", "url": ENDPOINTS["stock-data"], "data": {"ticker": "AAPL", "start_date": (
+            datetime.now() - timedelta(days=30)).strftime("%Y-%m-%d"), "end_date": datetime.now().strftime("%Y-%m-%d")}},
     ]
 
     results = []
     for case in test_cases:
-        success = test_endpoint(case["name"], case["method"], case["url"], case["data"])
+        success = test_endpoint(
+            case["name"], case["method"], case["url"], case["data"])
         results.append({"endpoint": case["name"], "success": success})
-        print(Fore.GREEN + f"[SUCCESS] {case['name']}" if success else Fore.RED + f"[FAILED] {case['name']}")
+        print(
+            Fore.GREEN + f"[SUCCESS] {case['name']}" if success else Fore.RED + f"[FAILED] {case['name']}")
 
     success_count = sum(r["success"] for r in results)
-    print(Style.BRIGHT + Fore.MAGENTA + f"\n=== Test Summary: {success_count}/{len(results)} succeeded ===")
+    print(Style.BRIGHT + Fore.MAGENTA +
+          f"\n=== Test Summary: {success_count}/{len(results)} succeeded ===")
     for r in results:
-        status = Fore.GREEN + "Success" if r["success"] else Fore.RED + "Failed"
+        status = Fore.GREEN + \
+            "Success" if r["success"] else Fore.RED + "Failed"
         print(f"{r['endpoint']}: {status}")
 
 
