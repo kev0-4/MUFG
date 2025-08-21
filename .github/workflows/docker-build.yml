@@ -34,5 +34,5 @@ jobs:
               "trigger": "docker_build_complete",
               "branch": "${{ github.ref_name }}"
             }
-          timeout: 30000   # increase to 30s
+          timeout: 30000 
 
