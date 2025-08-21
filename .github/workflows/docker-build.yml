@@ -29,8 +29,10 @@ jobs:
           url: ${{ secrets.N8N_WEBHOOK_URL }}
           method: POST
           contentType: "application/json"
-          body: |
+          data: |
             {
               "trigger": "docker_build_complete",
               "branch": "${{ github.ref_name }}"
             }
+          timeout: 30000   # increase to 30s
+
