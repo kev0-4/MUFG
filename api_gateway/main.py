@@ -12,10 +12,18 @@ from cryptography.hazmat.backends import default_backend
 from utils.key_provider import load_private_key, load_public_key, setup_keys
 from utils.logger import log_metadata
 from utils.test_module import run_all_tests
+from fastapi.middleware.cors import CORSMiddleware
 
 
 app = FastAPI(title="FinGuard API Gateway",
               description="Public API Gateway for FinGuard servers with E2E encryption.")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Configuration from .env
 FINANCIAL_SERVER_URL = os.getenv(
