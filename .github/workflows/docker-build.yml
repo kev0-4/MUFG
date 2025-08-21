@@ -20,8 +20,8 @@ jobs:
 
       - name: Build & Push Images
         run: |
-          docker-compose -f monitoring/docker-compose.yml build
-          docker-compose -f monitoring/docker-compose.yml push
+          docker compose -f monitoring/docker-compose.yml build
+          docker compose -f monitoring/docker-compose.yml push
 
       - name: Trigger n8n Webhook
         uses: fjogeleit/http-request-action@v1
