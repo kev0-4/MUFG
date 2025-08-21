@@ -2,14 +2,14 @@ jobs:
   build-docker:
     runs-on: ubuntu-latest
     env:
-      GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
-      REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
-      FIREBASE_CREDENTIALS_PATH: ${{ secrets.FIREBASE_CREDENTIALS_PATH }}
-      FINANCIAL_SERVER_URL: ${{ secrets.FINANCIAL_SERVER_URL }}
-      NLP_SERVER_URL: ${{ secrets.NLP_SERVER_URL }}
-      ANALYTICS_SERVER_URL: ${{ secrets.ANALYTICS_SERVER_URL }}
-      REDIS_HOST: ${{ secrets.REDIS_HOST }}
-      REDIS_PORT: ${{ secrets.REDIS_PORT }}
+      GOOGLE_API_KEY: "${{ secrets.GOOGLE_API_KEY }}"
+      REDIS_PASSWORD: "${{ secrets.REDIS_PASSWORD }}"
+      FIREBASE_CREDENTIALS_PATH: "${{ secrets.FIREBASE_CREDENTIALS_PATH }}"
+      FINANCIAL_SERVER_URL: "${{ secrets.FINANCIAL_SERVER_URL }}"
+      NLP_SERVER_URL: "${{ secrets.NLP_SERVER_URL }}"
+      ANALYTICS_SERVER_URL: "${{ secrets.ANALYTICS_SERVER_URL }}"
+      REDIS_HOST: "${{ secrets.REDIS_HOST }}"
+      REDIS_PORT: "${{ secrets.REDIS_PORT }}"
 
     steps:
       - name: Checkout Code
