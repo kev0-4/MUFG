@@ -7,8 +7,8 @@ import Portfolio from './components/Portfolio'
 import Simulation from './components/Simulation'
 import Insights from './components/Insights'
 import Profile from './components/Profile'
-import Settings from './components/Settings'
-import { YFinanceData, StockLatest, StockData, PortfolioData, UserData, SimulationData, QueryData, RecommendationData, SentimentData, KeyData, ChatMessage } from './types'
+import type Settings from './components/Settings'
+import type { YFinanceData, StockLatest, StockData, PortfolioData, UserData, SimulationData, QueryData, RecommendationData, SentimentData, KeyData, ChatMessage } from './types'
 
 const API_GATEWAY_URL = 'http://20.244.41.104:8080'
 const GEMINI_API_KEY = 'YOUR_GEMINI_API_KEY' // Replace with your Gemini API key
