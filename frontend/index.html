@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FinGuard API Client</title>
+    <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.development.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.development.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.20.6/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+      const { useState } = React;
+
+      const API_GATEWAY_URL = "http://20.244.41.104:8080";
+      const ENDPOINTS = {
+        "public-key": `${API_GATEWAY_URL}/api/public-key`,
+        "public-private-key": `${API_GATEWAY_URL}/api/public-private-key`,
+        "user-data": `${API_GATEWAY_URL}/api/user-data`,
+        simulate: `${API_GATEWAY_URL}/api/simulate`,
+        recommend: `${API_GATEWAY_URL}/api/recommend`,
+        "stock-sentiments": `${API_GATEWAY_URL}/api/stock-sentiments`,
+        enhance: `${API_GATEWAY_URL}/api/enhance`,
+        query: `${API_GATEWAY_URL}/api/query`,
+        "stock-latest": `${API_GATEWAY_URL}/api/stock-latest/INTC`,
+        "stock-data": `${API_GATEWAY_URL}/api/stock-data`,
+      };
+
+      const App = () => {
+        const [userId, setUserId] = useState("uid1");
+        const [ticker, setTicker] = useState("AAPL");
+        const [aiPrompt, setAiPrompt] = useState("Optimize for low risk");
+        const [queryText, setQueryText] = useState(
+          "What is the stock market outlook for tech?"
+        );
+        const [response, setResponse] = useState("");
+        const [error, setError] = useState("");
+
+        const callEndpoint = async (endpoint, method, data = null) => {
+          setError("");
+          setResponse("");
+          try {
+            const options = {
+              method,
+              headers: { "Content-Type": "application/json" },
+              body: data ? JSON.stringify(data) : null,
+            };
+            const res = await fetch(ENDPOINTS[endpoint], options);
+            if (!res.ok)
+              throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+            const resData = await res.json();
+            setResponse(JSON.stringify(resData, null, 2));
+          } catch (e) {
+            setError(e.message);
+          }
+        };
+
+        const today = new Date("2025-08-22");
+        const thirtyDaysAgo = new Date(today);
+        thirtyDaysAgo.setDate(today.getDate() - 30);
+
+        return (
+          <div className="container mx-auto p-4">
+            <h1 className="text-3xl font-bold mb-4">FinGuard API Client</h1>
+            <div className="mb-4">
+              <label className="block mb-1">User ID:</label>
+              <input
+                type="text"
+                value={userId}
+                onChange={(e) => setUserId(e.target.value)}
+                className="border p-2 w-full"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block mb-1">Ticker (for stock-data):</label>
+              <input
+                type="text"
+                value={ticker}
+                onChange={(e) => setTicker(e.target.value)}
+                className="border p-2 w-full"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block mb-1">AI Prompt (for enhance):</label>
+              <input
+                type="text"
+                value={aiPrompt}
+                onChange={(e) => setAiPrompt(e.target.value)}
+                className="border p-2 w-full"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block mb-1">Query (for query):</label>
+              <input
+                type="text"
+                value={queryText}
+                onChange={(e) => setQueryText(e.target.value)}
+                className="border p-2 w-full"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4 mb-4">
+              {Object.keys(ENDPOINTS).map((key) => (
+                <button
+                  key={key}
+                  onClick={() => {
+                    const data = {
+                      "public-key": null,
+                      "public-private-key": null,
+                      "user-data": { user_id: userId },
+                      simulate: {
+                        user_id: userId,
+                        simulation_data: {
+                          amount: 10000,
+                          stocks: ["AAPL", "GOOGL"],
+                          duration_months: 12,
+                        },
+                      },
+                      recommend: { user_id: userId },
+                      "stock-sentiments": { user_id: userId },
+                      enhance: {
+                        user_id: userId,
+                        simulation_data: { amount: 10000, stocks: ["AAPL"] },
+                        ai_prompt: aiPrompt,
+                      },
+                      query: { user_id: userId, query: queryText },
+                      "stock-latest": null,
+                      "stock-data": {
+                        ticker: ticker,
+                        start_date: thirtyDaysAgo.toISOString().split("T")[0],
+                        end_date: today.toISOString().split("T")[0],
+                      },
+                    }[key];
+                    callEndpoint(
+                      key,
+                      [
+                        "public-key",
+                        "public-private-key",
+                        "stock-latest",
+                      ].includes(key)
+                        ? "GET"
+                        : "POST",
+                      data
+                    );
+                  }}
+                  className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+                >
+                  Call {key.replace("-", " ")}
+                </button>
+              ))}
+            </div>
+            {error && (
+              <div className="bg-red-100 text-red-700 p-4 mb-4">
+                <strong>Error:</strong> {error}
+              </div>
+            )}
+            {response && (
+              <div className="bg-gray-100 p-4">
+                <strong>Response:</strong>
+                <pre className="whitespace-pre-wrap">{response}</pre>
+              </div>
+            )}
+          </div>
+        );
+      };
+
+      ReactDOM.render(<App />, document.getElementById("root"));
+    </script>
+  </body>
+</html>
