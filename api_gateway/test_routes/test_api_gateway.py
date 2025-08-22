@@ -14,7 +14,7 @@ from colorama import Fore, Style, init
 init(autoreset=True)
 
 # Constants
-API_GATEWAY_URL = "http://20.244.41.104:8080"
+API_GATEWAY_URL = "http://localhost:8080"
 PUBLIC_KEY_URL = f"{API_GATEWAY_URL}/api/public-key"
 CLIENT_PRIVATE_KEY_PATH = "client_private_key.pem"
 
@@ -207,22 +207,24 @@ def test_all_endpoints():
           "\n=== Testing All FinGuard API Endpoints ===")
 
     test_cases = [
+        {"name": "stock-latest", "method": "GET",
+            "url": ENDPOINTS["stock-latest"], "data": {"user_id": "uid1"}},
         {"name": "public-key", "method": "GET",
             "url": ENDPOINTS["public-key"], "data": None},
+            {"name": "stock-sentiments", "method": "POST",
+            "url": ENDPOINTS["stock-sentiments"], "data": {"user_id": "uid1"}},
         {"name": "user-data", "method": "POST",
             "url": ENDPOINTS["user-data"], "data": {"user_id": "uid1"}},
         {"name": "simulate", "method": "POST", "url": ENDPOINTS["simulate"], "data": {
             "user_id": "uid1", "simulation_data": {"amount": 10000, "stocks": ["AAPL", "GOOGL"], "duration_months": 12}}},
         {"name": "recommend", "method": "POST",
             "url": ENDPOINTS["recommend"], "data": {"user_id": "uid1"}},
-        {"name": "stock-sentiments", "method": "POST",
-            "url": ENDPOINTS["stock-sentiments"], "data": {"user_id": "uid1"}},
+        
         {"name": "enhance", "method": "POST", "url": ENDPOINTS["enhance"], "data": {
             "user_id": "uid1", "simulation_data": {"amount": 10000, "stocks": ["AAPL"]}, "ai_prompt": "Optimize for low risk"}},
         {"name": "query", "method": "POST", "url": ENDPOINTS["query"], "data": {
             "user_id": "uid1", "query": "What is the stock market outlook for tech?"}},
-        {"name": "stock-latest", "method": "GET",
-            "url": ENDPOINTS["stock-latest"], "data": {"user_id": "uid1"}},
+        
         {"name": "stock-data", "method": "POST", "url": ENDPOINTS["stock-data"], "data": {"ticker": "AAPL", "start_date": (
             datetime.now() - timedelta(days=30)).strftime("%Y-%m-%d"), "end_date": datetime.now().strftime("%Y-%m-%d")}},
     ]

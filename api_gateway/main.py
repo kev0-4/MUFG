@@ -27,10 +27,10 @@ app.add_middleware(
 
 # Configuration from .env
 FINANCIAL_SERVER_URL = os.getenv(
-    "FINANCIAL_SERVER_URL", "http://localhost:8001")
-NLP_SERVER_URL = os.getenv("NLP_SERVER_URL", "http://localhost:8000")
+    "FINANCIAL_SERVER_URL", "http://20.244.41.104:8001")
+NLP_SERVER_URL = os.getenv("NLP_SERVER_URL", "http://20.244.41.104:8000")
 ANALYTICS_SERVER_URL = os.getenv(
-    "ANALYTICS_SERVER_URL", "http://localhost:8002")
+    "ANALYTICS_SERVER_URL", "http://20.244.41.104:8002")
 
 # Initialize keys
 setup_keys()
@@ -395,48 +395,25 @@ async def process_query(request: Request):
 
 
 @app.get("/api/stock-latest/{ticker}")
-async def get_stock_latest(ticker: str, request: Request):
+async def get_stock_latest(ticker: str):
     try:
-        body = await request.json() or {}  # Body is optional
-        decrypted = decrypt_request(
-            body.get("encrypted_data", ""),
-            body.get("encrypted_key", ""),
-            body.get("iv", "")
-        ) if body else {}
-
+        # Directly call financial server (no body, no decryption)
         financial_url = FINANCIAL_SERVER_URL + f"/api/stock/latest/{ticker}"
-        financial_response = requests.get(
-            financial_url, json=decrypted or None)
+        financial_response = requests.get(financial_url)
         financial_response.raise_for_status()
         response_data = financial_response.json()
 
+        # Encrypt with client public key
         client_public_key = load_public_key("keys/client_public_key.pem")
         encrypted_response = encrypt_response(response_data, client_public_key)
 
-        log_metadata({
-            "service": "api_gateway",
-            "endpoint": f"/api/stock-latest/{ticker}",
-            "ticker": ticker,
-            "status": "success"
-        })
         return encrypted_response
-    except ValueError as ve:
-        log_metadata({
-            "service": "api_gateway",
-            "endpoint": f"/api/stock-latest/{ticker}",
-            "error": str(ve),
-            "status": "error"
-        })
-        raise HTTPException(status_code=400, detail=str(ve))
-    except Exception as e:
-        log_metadata({
-            "service": "api_gateway",
-            "endpoint": f"/api/stock-latest/{ticker}",
-            "error": str(e),
-            "status": "error"
-        })
-        raise HTTPException(status_code=500, detail=f"Server error: {str(e)}")
 
+    except ValueError as ve:
+        raise HTTPException(status_code=400, detail=str(ve))
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Server error: {str(e)}")
 
 @app.post("/api/stock-data")
 async def get_stock_data(request: Request):

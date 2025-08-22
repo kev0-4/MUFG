@@ -14,7 +14,7 @@ PUBLIC_KEY_URL = f"{API_GATEWAY_URL}/api/public-key"
 STOCK_SENTIMENTS_URL = f"{API_GATEWAY_URL}/api/stock-sentiments"
 
 # Path to private key (same folder as script)
-CLIENT_PRIVATE_KEY_PATH = "client_private_key.pem"
+CLIENT_PRIVATE_KEY_PATH = "client_private_key.pem" # take this from that route instead
 
 
 def load_private_key(path):
