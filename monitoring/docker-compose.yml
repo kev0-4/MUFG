@@ -17,6 +17,7 @@
         - REDIS_PORT=${REDIS_PORT}
       volumes:
         - ../api_gateway/keys:/app/keys:ro
+        - ../api_gateway/api_gateway.log:/app/api_gateway.log
       networks:
         - finguard-net
 
@@ -35,6 +36,8 @@
         - ANALYTICS_SERVER_URL=${ANALYTICS_SERVER_URL}
         - REDIS_HOST=${REDIS_HOST}
         - REDIS_PORT=${REDIS_PORT}
+      volumes:
+        - ../financial-server/logs/financial_server.log:/app/logs/financial_server.log
       networks:
         - finguard-net
 
@@ -53,6 +56,8 @@
         - ANALYTICS_SERVER_URL=${ANALYTICS_SERVER_URL}
         - REDIS_HOST=${REDIS_HOST}
         - REDIS_PORT=${REDIS_PORT}
+      volumes:
+        - ../server_4_nlp/nlp_server.log:/app/nlp_server.log
       networks:
         - finguard-net
 
@@ -71,6 +76,8 @@
         - ANALYTICS_SERVER_URL=${ANALYTICS_SERVER_URL}
         - REDIS_HOST=${REDIS_HOST}
         - REDIS_PORT=${REDIS_PORT}
+      volumes:
+        - ../server_5_analytics/ai_analytics_server.log:/app/ai_analytics_server.log
       networks:
         - finguard-net
 
