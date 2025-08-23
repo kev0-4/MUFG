@@ -36,23 +36,3 @@ jobs:
         run: |
           docker compose -f monitoring/docker-compose.yml build
           docker compose -f monitoring/docker-compose.yml push
-
-      - name: Trigger n8n Webhook
-        id: webhook
-        uses: fjogeleit/http-request-action@v1
-        with:
-          url: ${{ secrets.N8N_WEBHOOK_URL }}
-          method: POST
-          timeout: 3000000
-          customHeaders: '{"Content-Type":"application/json"}'
-
-      - name: Check Webhook Response
-        run: |
-          echo "Response: ${{ steps.webhook.outputs.response }}"
-          success=$(echo '${{ steps.webhook.outputs.response }}' | jq -r '.success')
-          if [ "$success" != "true" ]; then
-            echo "❌ Webhook reported failure"
-            exit 1
-          fi
-          echo "✅ Webhook succeeded"
-      
