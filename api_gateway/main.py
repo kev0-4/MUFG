@@ -1,22 +1,15 @@
-import json
-import base64
 import os
-import secrets
 from fastapi import FastAPI, HTTPException, Request
-import requests
-from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.asymmetric import padding
-from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
-from cryptography.hazmat.primitives import padding as sym_padding
-from cryptography.hazmat.backends import default_backend
-from utils.key_provider import load_private_key, load_public_key, setup_keys
+import httpx
 from utils.logger import log_metadata
 from utils.test_module import run_all_tests
 from fastapi.middleware.cors import CORSMiddleware
 
+app = FastAPI(
+    title="FinGuard API Gateway",
+    description="Public API Gateway for FinGuard servers without encryption for development."
+)
 
-app = FastAPI(title="FinGuard API Gateway",
-              description="Public API Gateway for FinGuard servers with E2E encryption.")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -25,101 +18,29 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Configuration from .env
-FINANCIAL_SERVER_URL = os.getenv(
-    "FINANCIAL_SERVER_URL", "http://20.244.41.104:8001")
+FINANCIAL_SERVER_URL = os.getenv("FINANCIAL_SERVER_URL", "http://20.244.41.104:8001")
 NLP_SERVER_URL = os.getenv("NLP_SERVER_URL", "http://20.244.41.104:8000")
-ANALYTICS_SERVER_URL = os.getenv(
-    "ANALYTICS_SERVER_URL", "http://20.244.41.104:8002")
-
-# Initialize keys
-setup_keys()
-private_key = load_private_key("keys/gateway_private_key.pem")
-public_key = load_public_key("keys/gateway_public_key.pem")
+ANALYTICS_SERVER_URL = os.getenv("ANALYTICS_SERVER_URL", "http://20.244.41.104:8002")
 
 
-def decrypt_request(encrypted_data: str, encrypted_key: str, iv: str):
-    try:
-        encrypted_data_bytes = base64.b64decode(encrypted_data)
-        encrypted_key_bytes = base64.b64decode(encrypted_key)
-        iv_bytes = base64.b64decode(iv)
-
-        aes_key = private_key.decrypt(
-            encrypted_key_bytes,
-            padding.OAEP(
-                mgf=padding.MGF1(algorithm=hashes.SHA256()),
-                algorithm=hashes.SHA256(),
-                label=None
-            )
-        )
-
-        cipher = Cipher(algorithms.AES(aes_key), modes.CBC(
-            iv_bytes), backend=default_backend())
-        decryptor = cipher.decryptor()
-        padded_data = decryptor.update(
-            encrypted_data_bytes) + decryptor.finalize()
-
-        unpadder = sym_padding.PKCS7(128).unpadder()
-        data = unpadder.update(padded_data) + unpadder.finalize()
-
-        return json.loads(data.decode('utf-8'))
-    except Exception as e:
-        raise ValueError(f"Decryption error: {str(e)}")
-
-
-def encrypt_response(response_data: dict, client_public_key):
-    try:
-        aes_key = secrets.randbits(256).to_bytes(32, 'big')
-        iv = os.urandom(16)
-
-        json_data = json.dumps(response_data).encode('utf-8')
-        padder = sym_padding.PKCS7(128).padder()
-        padded_data = padder.update(json_data) + padder.finalize()
-
-        cipher = Cipher(algorithms.AES(aes_key), modes.CBC(iv),
-                        backend=default_backend())
-        encryptor = cipher.encryptor()
-        encrypted_data = encryptor.update(padded_data) + encryptor.finalize()
-
-        encrypted_key = client_public_key.encrypt(
-            aes_key,
-            padding.OAEP(
-                mgf=padding.MGF1(algorithm=hashes.SHA256()),
-                algorithm=hashes.SHA256(),
-                label=None
-            )
-        )
-
-        return {
-            "encrypted_data": base64.b64encode(encrypted_data).decode('utf-8'),
-            "encrypted_key": base64.b64encode(encrypted_key).decode('utf-8'),
-            "iv": base64.b64encode(iv).decode('utf-8')
-        }
-    except Exception as e:
-        raise ValueError(f"Encryption error: {str(e)}")
+@app.get("/")
+async def hello_server():
+    return {"Msg": "Welcome"}
 
 
 @app.post("/api/user-data")
 async def get_user_data(request: Request):
     try:
         body = await request.json()
-        decrypted = decrypt_request(
-            body.get("encrypted_data"),
-            body.get("encrypted_key"),
-            body.get("iv")
-        )
-        user_id = decrypted.get("user_id")
+        user_id = body.get("user_id")
         if not user_id:
             raise ValueError("Invalid request: user_id required")
 
         analytics_url = ANALYTICS_SERVER_URL + "/analytics/user-data"
-        analytics_response = requests.post(
-            analytics_url, json={"user_id": user_id})
+        async with httpx.AsyncClient() as client:
+            analytics_response = await client.post(analytics_url, json={"user_id": user_id})
         analytics_response.raise_for_status()
         response_data = analytics_response.json()
-
-        client_public_key = load_public_key("keys/client_public_key.pem")
-        encrypted_response = encrypt_response(response_data, client_public_key)
 
         log_metadata({
             "service": "api_gateway",
@@ -127,7 +48,7 @@ async def get_user_data(request: Request):
             "user_id": user_id,
             "status": "success"
         })
-        return encrypted_response
+        return response_data
     except ValueError as ve:
         log_metadata({
             "service": "api_gateway",
@@ -150,25 +71,16 @@ async def get_user_data(request: Request):
 async def simulate_investment(request: Request):
     try:
         body = await request.json()
-        decrypted = decrypt_request(
-            body.get("encrypted_data"),
-            body.get("encrypted_key"),
-            body.get("iv")
-        )
-        user_id = decrypted.get("user_id")
-        simulation_data = decrypted.get("simulation_data")
+        user_id = body.get("user_id")
+        simulation_data = body.get("simulation_data")
         if not user_id or not simulation_data:
-            raise ValueError(
-                "Invalid request: user_id and simulation_data required")
+            raise ValueError("Invalid request: user_id and simulation_data required")
 
         analytics_url = ANALYTICS_SERVER_URL + "/analytics/simulate"
-        analytics_response = requests.post(
-            analytics_url, json={"user_id": user_id, "simulation_data": simulation_data})
+        async with httpx.AsyncClient() as client:
+            analytics_response = await client.post(analytics_url, json={"user_id": user_id, "simulation_data": simulation_data})
         analytics_response.raise_for_status()
         response_data = analytics_response.json()
-
-        client_public_key = load_public_key("keys/client_public_key.pem")
-        encrypted_response = encrypt_response(response_data, client_public_key)
 
         log_metadata({
             "service": "api_gateway",
@@ -176,7 +88,7 @@ async def simulate_investment(request: Request):
             "user_id": user_id,
             "status": "success"
         })
-        return encrypted_response
+        return response_data
     except ValueError as ve:
         log_metadata({
             "service": "api_gateway",
@@ -199,23 +111,15 @@ async def simulate_investment(request: Request):
 async def get_recommendations(request: Request):
     try:
         body = await request.json()
-        decrypted = decrypt_request(
-            body.get("encrypted_data"),
-            body.get("encrypted_key"),
-            body.get("iv")
-        )
-        user_id = decrypted.get("user_id")
+        user_id = body.get("user_id")
         if not user_id:
             raise ValueError("Invalid request: user_id required")
 
         analytics_url = ANALYTICS_SERVER_URL + "/analytics/recommend"
-        analytics_response = requests.post(
-            analytics_url, json={"user_id": user_id})
+        async with httpx.AsyncClient() as client:
+            analytics_response = await client.post(analytics_url, json={"user_id": user_id})
         analytics_response.raise_for_status()
         response_data = analytics_response.json()
-
-        client_public_key = load_public_key("keys/client_public_key.pem")
-        encrypted_response = encrypt_response(response_data, client_public_key)
 
         log_metadata({
             "service": "api_gateway",
@@ -223,7 +127,7 @@ async def get_recommendations(request: Request):
             "user_id": user_id,
             "status": "success"
         })
-        return encrypted_response
+        return response_data
     except ValueError as ve:
         log_metadata({
             "service": "api_gateway",
@@ -244,31 +148,17 @@ async def get_recommendations(request: Request):
 
 @app.post("/api/stock-sentiments")
 async def analyze_stock_sentiments(request: Request):
-    print(request)
     try:
         body = await request.json()
-        decrypted = decrypt_request(
-            body.get("encrypted_data"),
-            body.get("encrypted_key"),
-            body.get("iv")
-        )
-        # Only extract user_id, ignore stocks and scenario
-        user_id = decrypted.get("user_id")
+        user_id = body.get("user_id")
         if not user_id:
             raise ValueError("Invalid request: user_id required")
 
-        # Use the modified request function
         nlp_url = NLP_SERVER_URL + "/nlp/user-stock-sentiments"
-        nlp_response = requests.post(
-            nlp_url,
-            json={"userId": user_id},  # Changed to match the required format
-            headers={"Content-Type": "application/json"}
-        )
+        async with httpx.AsyncClient() as client:
+            nlp_response = await client.post(nlp_url, json={"userId": user_id}, headers={"Content-Type": "application/json"})
         nlp_response.raise_for_status()
         response_data = nlp_response.json()
-
-        client_public_key = load_public_key("keys/client_public_key.pem")
-        encrypted_response = encrypt_response(response_data, client_public_key)
 
         log_metadata({
             "service": "api_gateway",
@@ -276,7 +166,7 @@ async def analyze_stock_sentiments(request: Request):
             "user_id": user_id,
             "status": "success"
         })
-        return encrypted_response
+        return response_data
     except ValueError as ve:
         log_metadata({
             "service": "api_gateway",
@@ -299,26 +189,17 @@ async def analyze_stock_sentiments(request: Request):
 async def enhance_simulation(request: Request):
     try:
         body = await request.json()
-        decrypted = decrypt_request(
-            body.get("encrypted_data"),
-            body.get("encrypted_key"),
-            body.get("iv")
-        )
-        simulation_data = decrypted.get("simulation_data")
-        user_id = decrypted.get("user_id")
-        ai_prompt = decrypted.get("ai_prompt")
+        simulation_data = body.get("simulation_data")
+        user_id = body.get("user_id")
+        ai_prompt = body.get("ai_prompt")
         if not simulation_data or not user_id or not ai_prompt:
-            raise ValueError(
-                "Invalid request: simulation_data, user_id, and ai_prompt required")
+            raise ValueError("Invalid request: simulation_data, user_id, and ai_prompt required")
 
         nlp_url = NLP_SERVER_URL + "/nlp/enhance"
-        nlp_response = requests.post(nlp_url, json={
-                                     "simulation_data": simulation_data, "user_id": user_id, "ai_prompt": ai_prompt})
+        async with httpx.AsyncClient() as client:
+            nlp_response = await client.post(nlp_url, json={"simulation_data": simulation_data, "user_id": user_id, "ai_prompt": ai_prompt})
         nlp_response.raise_for_status()
         response_data = nlp_response.json()
-
-        client_public_key = load_public_key("keys/client_public_key.pem")
-        encrypted_response = encrypt_response(response_data, client_public_key)
 
         log_metadata({
             "service": "api_gateway",
@@ -326,7 +207,7 @@ async def enhance_simulation(request: Request):
             "user_id": user_id,
             "status": "success"
         })
-        return encrypted_response
+        return response_data
     except ValueError as ve:
         log_metadata({
             "service": "api_gateway",
@@ -349,24 +230,16 @@ async def enhance_simulation(request: Request):
 async def process_query(request: Request):
     try:
         body = await request.json()
-        decrypted = decrypt_request(
-            body.get("encrypted_data"),
-            body.get("encrypted_key"),
-            body.get("iv")
-        )
-        query = decrypted.get("query")
-        user_id = decrypted.get("user_id")
+        query = body.get("query")
+        user_id = body.get("user_id")
         if not query or not user_id:
             raise ValueError("Invalid request: query and user_id required")
 
         nlp_url = NLP_SERVER_URL + "/nlp/query"
-        nlp_response = requests.post(
-            nlp_url, json={"query": query, "user_id": user_id})
+        async with httpx.AsyncClient() as client:
+            nlp_response = await client.post(nlp_url, json={"query": query, "user_id": user_id})
         nlp_response.raise_for_status()
         response_data = nlp_response.json()
-
-        client_public_key = load_public_key("keys/client_public_key.pem")
-        encrypted_response = encrypt_response(response_data, client_public_key)
 
         log_metadata({
             "service": "api_gateway",
@@ -375,7 +248,7 @@ async def process_query(request: Request):
             "query_length": len(query),
             "status": "success"
         })
-        return encrypted_response
+        return response_data
     except ValueError as ve:
         log_metadata({
             "service": "api_gateway",
@@ -397,48 +270,52 @@ async def process_query(request: Request):
 @app.get("/api/stock-latest/{ticker}")
 async def get_stock_latest(ticker: str):
     try:
-        # Directly call financial server (no body, no decryption)
         financial_url = FINANCIAL_SERVER_URL + f"/api/stock/latest/{ticker}"
-        financial_response = requests.get(financial_url)
+        async with httpx.AsyncClient() as client:
+            financial_response = await client.get(financial_url)
         financial_response.raise_for_status()
         response_data = financial_response.json()
 
-        # Encrypt with client public key
-        client_public_key = load_public_key("keys/client_public_key.pem")
-        encrypted_response = encrypt_response(response_data, client_public_key)
-
-        return encrypted_response
-
+        log_metadata({
+            "service": "api_gateway",
+            "endpoint": f"/api/stock-latest/{ticker}",
+            "ticker": ticker,
+            "status": "success"
+        })
+        return response_data
     except ValueError as ve:
+        log_metadata({
+            "service": "api_gateway",
+            "endpoint": f"/api/stock-latest/{ticker}",
+            "error": str(ve),
+            "status": "error"
+        })
         raise HTTPException(status_code=400, detail=str(ve))
-
     except Exception as e:
+        log_metadata({
+            "service": "api_gateway",
+            "endpoint": f"/api/stock-latest/{ticker}",
+            "error": str(e),
+            "status": "error"
+        })
         raise HTTPException(status_code=500, detail=f"Server error: {str(e)}")
+
 
 @app.post("/api/stock-data")
 async def get_stock_data(request: Request):
     try:
         body = await request.json()
-        decrypted = decrypt_request(
-            body.get("encrypted_data"),
-            body.get("encrypted_key"),
-            body.get("iv")
-        )
-        ticker = decrypted.get("ticker")
-        start_date = decrypted.get("start_date")
-        end_date = decrypted.get("end_date")
+        ticker = body.get("ticker")
+        start_date = body.get("start_date")
+        end_date = body.get("end_date")
         if not ticker or not start_date or not end_date:
-            raise ValueError(
-                "Invalid request: ticker, start_date, and end_date required")
+            raise ValueError("Invalid request: ticker, start_date, and end_date required")
 
         financial_url = FINANCIAL_SERVER_URL + "/api/stock/data"
-        financial_response = requests.post(financial_url, json={
-                                           "ticker": ticker, "start_date": start_date, "end_date": end_date})
+        async with httpx.AsyncClient() as client:
+            financial_response = await client.post(financial_url, json={"ticker": ticker, "start_date": start_date, "end_date": end_date})
         financial_response.raise_for_status()
         response_data = financial_response.json()
-
-        client_public_key = load_public_key("keys/client_public_key.pem")
-        encrypted_response = encrypt_response(response_data, client_public_key)
 
         log_metadata({
             "service": "api_gateway",
@@ -446,7 +323,7 @@ async def get_stock_data(request: Request):
             "ticker": ticker,
             "status": "success"
         })
-        return encrypted_response
+        return response_data
     except ValueError as ve:
         log_metadata({
             "service": "api_gateway",
@@ -469,21 +346,19 @@ async def get_stock_data(request: Request):
 async def get_public_key():
     with open("keys/gateway_public_key.pem", "r") as f:
         return {"public_key": f.read()}
-    
+
+
 @app.get("/api/public-private-key")
-async def get_public_key():
+async def get_public_private_key():
     with open("keys/client_private_key.pem", "r") as f:
         return {"private_key": f.read()}
 
+
 @app.get("/api/test")
 async def test():
-    """API endpoint to run all tests"""
     test_results = run_all_tests()
-    
-    # Count successes and failures
     success_count = sum(1 for result in test_results if result["status"] == "success")
     failure_count = len(test_results) - success_count
-    
     return {
         "total_tests": len(test_results),
         "successful_tests": success_count,
@@ -493,6 +368,151 @@ async def test():
 
 
 
-if __name__ == "__main__":
+
+
+
+
+
+@app.get("/api/alpha-vantage")
+async def alpha_vantage_service():
+    from datetime import datetime
+    import aiohttp
+    import asyncio
+    import redis
+    import json
+    from typing import Dict, Any
+    async def make_async_api_call(session, url, params):
+        """Make asynchronous API call"""
+        async with session.get(url, params=params) as response:
+            response.raise_for_status()
+            return await response.json()
+    # Redis connection
+    redis_conn = redis.Redis(
+        host='redis-11788.c62.us-east-1-4.ec2.redns.redis-cloud.com',
+        port=11788,
+        decode_responses=True,
+        username="default",
+        password="h2n9cGmitI95GmERYQ73TmneBm0HMwrV",
+    )
+    
+    # Alpha Vantage API Key (replace with your actual key)
+    API_KEY = "LN6TK2B6L0R5M4D2"
+    
+    # Check cache first
+    cache_key = "alpha_vantage_currencies_data"
+    cached_data = redis_conn.get(cache_key)
+    
+    if cached_data:
+        return json.loads(cached_data)
+    
+    # If not cached, fetch from API asynchronously
+    base_url = "https://www.alphavantage.co/query"
+    
+    # Rare currencies to fetch
+    rare_currencies = {
+        'USDTRY': ('USD', 'TRY'),  # US Dollar to Turkish Lira
+        'USDZAR': ('USD', 'ZAR'),  # US Dollar to South African Rand
+        'USDRUB': ('USD', 'RUB'),  # US Dollar to Russian Ruble
+        'USDHUF': ('USD', 'HUF'),  # US Dollar to Hungarian Forint
+        'USDTHB': ('USD', 'THB'),  # US Dollar to Thai Baht
+    }
+    
+    currencies_data = {}
+    
+    # Create all API tasks
+    tasks = []
+    async with aiohttp.ClientSession() as session:
+        for name, (from_curr, to_curr) in rare_currencies.items():
+            params = {
+                'function': 'FX_DAILY',
+                'from_symbol': from_curr,
+                'to_symbol': to_curr,
+                'apikey': API_KEY,
+                'outputsize': 'compact'
+            }
+            tasks.append((name, from_curr, to_curr, make_async_api_call(session, base_url, params)))
+        
+        # Execute all API calls with rate limiting
+        for i, (name, from_curr, to_curr, task) in enumerate(tasks):
+            try:
+                # Add delay between requests for rate limiting
+                if i > 0:
+                    await asyncio.sleep(1.2)  # Slightly more than 1 second for safety
+                
+                data = await task
+                
+                if 'Time Series FX (Daily)' in data:
+                    time_series = data['Time Series FX (Daily)']
+                    dates = sorted(time_series.keys(), reverse=True)[:7]
+                    
+                    last_7_days = {}
+                    for date in dates:
+                        daily_data = time_series[date]
+                        last_7_days[date] = {
+                            'open': float(daily_data.get('1. open', 0)),
+                            'high': float(daily_data.get('2. high', 0)),
+                            'low': float(daily_data.get('3. low', 0)),
+                            'close': float(daily_data.get('4. close', 0))
+                        }
+                    
+                    # Calculate performance
+                    if len(dates) >= 2:
+                        start_price = float(time_series[dates[-1]]['4. close'])
+                        end_price = float(time_series[dates[0]]['4. close'])
+                        price_change = end_price - start_price
+                        percent_change = (price_change / start_price) * 100
+                        
+                        performance = {
+                            'price_change': round(price_change, 4),
+                            'percent_change': round(percent_change, 2),
+                            'start_price': round(start_price, 4),
+                            'end_price': round(end_price, 4)
+                        }
+                    else:
+                        performance = {"error": "Insufficient data"}
+                    
+                    currencies_data[name] = {
+                        'pair': f"{from_curr}/{to_curr}",
+                        'metadata': {k: v for k, v in data.items() if k != 'Time Series FX (Daily)'},
+                        'time_series': last_7_days,
+                        'latest_rate': end_price if len(dates) > 0 else 0,
+                        'performance_7d': performance
+                    }
+                else:
+                    currencies_data[name] = {
+                        'pair': f"{from_curr}/{to_curr}",
+                        'error': "No time series data found",
+                        'time_series': {},
+                        'latest_rate': 0,
+                        'performance_7d': {"error": "Data unavailable"}
+                    }
+                    
+            except Exception as e:
+                currencies_data[name] = {
+                    'pair': f"{from_curr}/{to_curr}",
+                    'error': str(e),
+                    'time_series': {},
+                    'latest_rate': 0,
+                    'performance_7d': {"error": "Data unavailable"}
+                }
+    
+    # Prepare final response
+    result = {
+        'metadata': {
+            'data_source': 'Alpha Vantage',
+            'timestamp': datetime.now().isoformat(),
+            'time_period': 'last_7_trading_days',
+            'currencies_count': len(currencies_data)
+        },
+        'currencies': currencies_data,
+        'cache_status': 'miss'
+    }
+    
+    # Cache the result for 1 hour (3600 seconds)
+    redis_conn.setex(cache_key, 3600, json.dumps(result))
+    
+    return result
+
+if __name__ == "_main_":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8080)
